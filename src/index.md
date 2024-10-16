@@ -18,7 +18,7 @@ toc: false
       marks: [
         Plot.ruleY([0]),
         Plot.lineY(aapl, {x: "Date", y: "Close", tip: true})
-      ]
+      ] 
     }))
   }</div>
   <div class="card">${
