@@ -9,21 +9,21 @@ export function chart(weather_data, mta_data) {
     var barMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         barWidth = height_test - barMargin.left - barMargin.right,
         barHeight = height_test - barMargin.top - barMargin.bottom,
-        barInnerRadius = parseFloat(height_test) * .3766,
+        barInnerRadius = parseFloat(height_test) * .4,
         barOuterRadius = parseFloat(height_test) * .454;   // the outerRadius goes from the middle of the SVG area to the border
 
     var tempMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         tempWidth = 500 - tempMargin.left - tempMargin.right,
         tempHeight = 500 - tempMargin.top - tempMargin.bottom,
-        tempInnerRadius = parseFloat(height_test) * .305,
-        tempOuterRadius = parseFloat(height_test) * .322;   // the outerRadius goes from the middle of the SVG area to the border
+        tempInnerRadius = parseFloat(height_test) * .299,
+        tempOuterRadius = parseFloat(height_test) * .312;   // the outerRadius goes from the middle of the SVG area to the border
 
     // set the dimensions and margins of the graph
     var busMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         busWidth = 900 - busMargin.left - busMargin.right,
         busHeight = 900 - busMargin.top - busMargin.bottom,
         busInnerRadius = parseFloat(height_test) * .215,
-        busOuterRadius = parseFloat(height_test) * .285;   // the outerRadius goes from the middle of the SVG area to the border
+        busOuterRadius = parseFloat(height_test) * .265;   // the outerRadius goes from the middle of the SVG area to the border
 
     var weekend_train_sum = 0;
     var weekday_train_sum = 0;
