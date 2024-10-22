@@ -370,11 +370,14 @@ export function buttonEventListeners(weather_data) {
     
     var rainy_days = [];
     var snowy_days = [];
-    
+    var cloudy_days = [];
+    var sunny_days = [];
+
     // Get weather data mins and maxes
     for (let s = 0; s < weather_data.length - 1; s++) {
         let precip = +weather_data[s].precip;
         let precip_type = weather_data[s].preciptype;
+        let cloudcover = weather_data[s].cloudcover;
         let date = weather_data[s].datetime;
 
         if (precip_type.includes("rain")) {
@@ -382,6 +385,12 @@ export function buttonEventListeners(weather_data) {
         }
         if (precip_type.includes("snow")) {
             snowy_days.push(date)
+        }    
+        if (cloudcover > 55) {
+            cloudy_days.push(date)
+        }   
+        if (cloudcover < 24) {
+            sunny_days.push(date)
         }
     }
 
@@ -553,24 +562,24 @@ export function buttonEventListeners(weather_data) {
             cloud_vid.style.display = 'none'
             return; 
         } if (this.classList.contains('inactive')) {  // then turn off
-            const snowy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("snow")).style('opacity', '.2');
+            const disable_noncloudy_days = d3.selectAll(".temp-bar").filter((d, i) => !(d.cloudcover > 55)).style('opacity', '.2');
 
-            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function(d,i) {     
+            const disable_noncloudy_bus_days = d3.selectAll(".bus-bar").filter(function(d,i) {     
                 let date = new Date(d["Date"]);
                 let day = ('0' + date.getDate()).slice(-2);
                 let month = ('0' + (date.getMonth()+1)).slice(-2);
                 let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
+                let is_cloudy = cloudy_days.includes(`${year}-${month}-${day}`);
+                return !is_cloudy;
             }).style("opacity", 0);
             
-            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function(d,i) {     
+            const disable_noncloudy_train_days = d3.selectAll(".train-bar").filter(function(d,i) {     
                 let date = new Date(d["Date"]);
                 let day = ('0' + date.getDate()).slice(-2);
                 let month = ('0' + (date.getMonth()+1)).slice(-2);
                 let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
+                let is_cloudy = cloudy_days.includes(`${year}-${month}-${day}`);
+                return !is_cloudy;
             }).style("opacity", 0);
 
             tooltip_info.innerHTML =`<p>cloudy days:</p>${weather_info_default_html}`;
@@ -594,47 +603,47 @@ export function buttonEventListeners(weather_data) {
         if (this.classList.contains('active')) { // then turn off
             this.classList.remove('active');
             this.classList.add('inactive');
-            const snowy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("snow")).style('opacity', '1');
+            const enable_nonsunny_days = d3.selectAll(".temp-bar").filter((d, i) => !(d.cloudcover < 24)).style('opacity', '1');
 
-            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function(d,i) {     
+            const enable_nonsunny_bus_days = d3.selectAll(".bus-bar").filter(function(d,i) {     
                 let date = new Date(d["Date"]);
                 let day = ('0' + date.getDate()).slice(-2);
                 let month = ('0' + (date.getMonth()+1)).slice(-2);
                 let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
+                let is_sunny = sunny_days.includes(`${year}-${month}-${day}`);
+                return !is_sunny;
             }).style("opacity", 1);
 
-            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function(d,i) {     
+            const enable_nonsunny_train_days = d3.selectAll(".train-bar").filter(function(d,i) {     
                 let date = new Date(d["Date"]);
                 let day = ('0' + date.getDate()).slice(-2);
                 let month = ('0' + (date.getMonth()+1)).slice(-2);
                 let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
+                let is_sunny = sunny_days.includes(`${year}-${month}-${day}`);
+                return !is_sunny;
             }).style("opacity", 1);
 
             sun_vid.style.display = 'none'
             return; 
-        } if (this.classList.contains('inactive')) {  // then turn off
-            const snowy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("snow")).style('opacity', '.2');
+        } if (this.classList.contains('inactive')) {  // then turn on
+            const disable_nonsunny_days = d3.selectAll(".temp-bar").filter((d, i) => !(d.cloudcover < 24)).style('opacity', '.2');
 
-            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function(d,i) {     
+            const disable_nonsunny_bus_days = d3.selectAll(".bus-bar").filter(function(d,i) {     
                 let date = new Date(d["Date"]);
                 let day = ('0' + date.getDate()).slice(-2);
                 let month = ('0' + (date.getMonth()+1)).slice(-2);
                 let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
+                let is_sunny = sunny_days.includes(`${year}-${month}-${day}`);
+                return !is_sunny;
             }).style("opacity", 0);
             
-            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function(d,i) {     
+            const disable_nonsunny_train_days = d3.selectAll(".train-bar").filter(function(d,i) {     
                 let date = new Date(d["Date"]);
                 let day = ('0' + date.getDate()).slice(-2);
                 let month = ('0' + (date.getMonth()+1)).slice(-2);
                 let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
+                let is_sunny = sunny_days.includes(`${year}-${month}-${day}`);
+                return !is_sunny;
             }).style("opacity", 0);
 
             tooltip_info.innerHTML =`<p>cloudy days:</p>${weather_info_default_html}`;
