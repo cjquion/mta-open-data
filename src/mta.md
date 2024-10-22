@@ -13,7 +13,7 @@
         This infographic shows the MTA’s daily public transportation ridership as the percentage change from average (calculated for both weekdays and weekends). Explore how weather impacts ridership using the filters below.
         </li>
         <li id="filters-groups">
-            <div id="filters-title" class="">Explore the chart with filters</div>
+            <div id="filters-title" class="">Filters</div>
             <ol id="transport-icon-list">
                 <li class="icon-li" id="bus-button"><img src="./icons/icons_bus.svg"/></li>
                 <li class="icon-li" id="train-button"><img src="./icons/icons_train.svg"/></li>
@@ -122,7 +122,7 @@ buttonEventListeners(weather_data);
 }
 #filters-groups div {
     padding-bottom: 25px;
-    padding-top: 25px;
+    padding-top: 0px;
 }
 #filters-groups ol {
     padding-bottom: 25px;
@@ -130,7 +130,8 @@ buttonEventListeners(weather_data);
 }
 #filters-title {
     border-bottom: solid;
-    font-size: 1vw;
+    font-size: .8vw;
+    padding-bottom: 5px !important;
 }
 #buttons-list {
     display: flex;
@@ -198,8 +199,8 @@ buttonEventListeners(weather_data);
 }
 #left-panel {
     font-family: "Roboto Mono", monospace;
-    max-height: 100vh;
-    height: 100vh;
+    height: 100%;
+    overflow: hidden;
 }
 .hero {
   display: flex;
@@ -211,7 +212,7 @@ buttonEventListeners(weather_data);
   text-align: center;
 }
 #blurb {
-    font-size: 1vw;
+    font-size: .7vw;
 }
 .mta-sidebar {
     display: flex;
@@ -221,7 +222,7 @@ buttonEventListeners(weather_data);
     bottom: 0;
     background: black;
     width: 21.75vw;
-    height: 100vh;
+    height: 100%;
     box-sizing: border-box;
     overflow-y: auto;
     padding: 50px;
@@ -242,6 +243,7 @@ li {
     margin-bottom: 0px;
     background-color: white;
     padding-right: 0px;
+    overflow: hidden;
 }
 #observablehq-footer {
     display: none;
@@ -281,13 +283,13 @@ li {
     padding: 0;
     padding-right: 0 !important;
     margin-bottom: 0px;
-    max-height: 100vh;
-    min-height: 100vh;
+    height: 100%;
+    min-height: 100%;
 }
 #observablehq-center {
     margin-right: 0px;
-    max-height: 100vh;
     max-width: 100vw;
+    height: 100%;
 }
 #tooltip-wrapper {
     position: absolute;
@@ -309,8 +311,8 @@ body {
     box-sizing: border-box;
     margin: 0;
     width: 100%;
+    height: 100vh;
     max-width: none;
-    max-height: 100vh;
 }
 #tooltip {
     position: relative;
