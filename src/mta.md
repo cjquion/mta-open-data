@@ -173,7 +173,7 @@ buttonEventListeners(weather_data);
     top: 0;
     bottom: 0;
     background: black;
-    width: 557px;
+    width: 21.75vw;
     box-sizing: border-box;
     overflow-y: auto;
     padding: 50px;
@@ -212,7 +212,7 @@ li {
     position: absolute;
     width: 100vw;
     height: 100vh;
-    transform: translate(557px, 0);
+    transform: translate(21.75vw, 0);
 }
 #observablehq-main {
     min-width: 100vw;
