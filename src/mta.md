@@ -255,6 +255,7 @@ li {
 #observablehq-center {
     margin-right: 0px;
     max-height: 100vh;
+    max-width: 100vw;
 }
 #tooltip-wrapper {
     position: absolute;
@@ -273,7 +274,9 @@ li {
     border-radius: 50%;
 }
 body {
+    box-sizing: border-box;
     margin: 0;
+    width: 100%;
     max-width: none;
     max-height: 100vh;
 }
