@@ -204,6 +204,9 @@ li {
     background-color: white;
     padding-right: 0px;
 }
+#observablehq-footer {
+    display: none;
+}
 #bus_dataviz {
     position: absolute;
 }
@@ -232,6 +235,7 @@ li {
 #observablehq-main {
     min-width: 100vw;
     margin-top: 0px;
+    margin-bottom: 0px;
     max-height: 100vh;
     min-height: 100vh;
 }
@@ -241,6 +245,9 @@ li {
 }
 #tooltip {
     position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
     text-align: center;
     padding: 1rem;
     background: black;
@@ -252,9 +259,6 @@ li {
     width: 29.5vh;
     border-radius: 50%;
     display: flex;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
     align-items: center;
     justify-content: center;
     font-family: "Roboto Mono", monospace;
