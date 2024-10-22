@@ -33,7 +33,8 @@
 
 <div id="container">
     <div id="legend"><img src="assets/Legend.png"/></div>
-    <div id="tooltip">
+    <div id="tooltip-wrapper">
+        <div id="tooltip">
         <div id="tooltip-info">
             <p> Hover over a bar in the chart to display info for that day </p>
         </div>
@@ -56,6 +57,7 @@
         <video autoplay muted loop>
             <source src="assets\cloud.mp4" type="video/mp4">
         </video>
+        </div>
     </div>
     </div>
     <div id="my_dataviz"></div>
@@ -144,6 +146,7 @@ buttonEventListeners(weather_data);
 .sidebar-contents {
     padding-left: 0px;
     width: 100%;
+    height: 100%;
     position: relative;
 }
 #transport-icon-list li {
@@ -178,6 +181,9 @@ buttonEventListeners(weather_data);
   text-wrap: balance;
   text-align: center;
 }
+#blurb {
+    font-size: .5rem;
+}
 .mta-sidebar {
     display: flex;
     position: fixed;
@@ -186,6 +192,7 @@ buttonEventListeners(weather_data);
     bottom: 0;
     background: black;
     width: 21.75vw;
+    height: 100vh;
     box-sizing: border-box;
     overflow-y: auto;
     padding: 50px;
@@ -243,20 +250,32 @@ li {
     margin-right: 0px;
     max-height: 100vh;
 }
-#tooltip {
+#tooltip-wrapper {
     position: absolute;
+    height: 29.5vh;
+    width: 29.5vh;
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Roboto Mono", monospace;
+      font-family: "Roboto Mono", monospace;
+    overflow: hidden;
+        border-radius: 50%;
+
+}
+#tooltip {
+    position: relative;
     text-align: center;
-    padding: 1rem;
     background: black;
     color: white;
     border: 0px;
     pointer-events: none;
     font-size: 1rem;
-    height: 29.5vh;
-    width: 29.5vh;
+    height: 100%;
+    width: 100%;
     border-radius: 50%;
     display: flex;
     align-items: center;
