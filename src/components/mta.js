@@ -392,6 +392,9 @@ export function buttonEventListeners(weather_data) {
         var tooltip_info = document.getElementById("tooltip-info");
         var rain_vid = document.getElementById("rain-vid-container");
         var snow_vid = document.getElementById("snow-vid-container");
+        var sun_vid = document.getElementById("sun-vid-container");
+        var cloud_vid = document.getElementById("cloud-vid-container");
+
         let snow_button = document.getElementById("snow-button");
 
         if (this.classList.contains('active')) {
@@ -420,14 +423,13 @@ export function buttonEventListeners(weather_data) {
 
             return; 
         } if (this.classList.contains('inactive')) {
-            setTimeout(() => {
-                tooltip.style.opacity = 1;
-            }, this.animationDelay + 20);   
             if (snow_button.classList.contains("inactive")) {
                 snow_vid.style.display = 'none';
             }
+            if (sun_button.classList.contains("inactive")) {
+                sun_vid.style.display = 'none';
+            }
             rain_vid.style.display = 'block';
-
             const rainy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("rain")).style('opacity', '.2');
 
             const nonrainy_bus_d = d3.selectAll(".bus-bar").filter(function(d,i) {     
@@ -511,25 +513,137 @@ export function buttonEventListeners(weather_data) {
             tooltip_info.innerHTML =`${weather_info_default_html}`;
             this.classList.remove('inactive');
             this.classList.add('active');
-            return;
             snow_vid.style.display = 'block';
-            rain_vid.style.display = 'none';
 
-            tooltip_info.innerHTML =`${weather_info_default_html}`;
-            this.classList.remove('inactive');
-            this.classList.add('active');
             return;
         }
     });
     
     cloud_button.addEventListener("click", function(e) {
         e.preventDefault();
+        var tooltip = document.getElementById("tooltip");
+        var tooltip_info = document.getElementById("tooltip-info");
+        var rain_vid = document.getElementById("rain-vid-container");
+        var snow_vid = document.getElementById("snow-vid-container");
+        var cloud_vid = document.getElementById("cloud-vid-container");
 
-        tooltip.transition()
-            .duration(100)
-            .style("opacity", 1);
-    
-        tooltip.html(`<p></p>`);
+        if (this.classList.contains('active')) { // then turn off
+            this.classList.remove('active');
+            this.classList.add('inactive');
+            const snowy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("snow")).style('opacity', '1');
+
+            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function(d,i) {     
+                let date = new Date(d["Date"]);
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth()+1)).slice(-2);
+                let year = date.getFullYear();
+                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
+                return !is_snowy;
+            }).style("opacity", 1);
+
+            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function(d,i) {     
+                let date = new Date(d["Date"]);
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth()+1)).slice(-2);
+                let year = date.getFullYear();
+                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
+                return !is_snowy;
+            }).style("opacity", 1);
+
+            cloud_vid.style.display = 'none'
+            return; 
+        } if (this.classList.contains('inactive')) {  // then turn off
+            const snowy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("snow")).style('opacity', '.2');
+
+            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function(d,i) {     
+                let date = new Date(d["Date"]);
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth()+1)).slice(-2);
+                let year = date.getFullYear();
+                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
+                return !is_snowy;
+            }).style("opacity", 0);
+            
+            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function(d,i) {     
+                let date = new Date(d["Date"]);
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth()+1)).slice(-2);
+                let year = date.getFullYear();
+                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
+                return !is_snowy;
+            }).style("opacity", 0);
+
+            tooltip_info.innerHTML =`<p>cloudy days:</p>${weather_info_default_html}`;
+            this.classList.remove('inactive');
+            this.classList.add('active');
+            cloud_vid.style.display = 'block';
+
+            return;
+        }
+    });
+
+    sun_button.addEventListener("click", function(e) {
+        e.preventDefault();
+        var tooltip = document.getElementById("tooltip");
+        var tooltip_info = document.getElementById("tooltip-info");
+        var rain_vid = document.getElementById("rain-vid-container");
+        var snow_vid = document.getElementById("snow-vid-container");
+        var cloud_vid = document.getElementById("cloud-vid-container");
+        var sun_vid = document.getElementById("sun-vid-container");
+
+        if (this.classList.contains('active')) { // then turn off
+            this.classList.remove('active');
+            this.classList.add('inactive');
+            const snowy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("snow")).style('opacity', '1');
+
+            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function(d,i) {     
+                let date = new Date(d["Date"]);
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth()+1)).slice(-2);
+                let year = date.getFullYear();
+                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
+                return !is_snowy;
+            }).style("opacity", 1);
+
+            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function(d,i) {     
+                let date = new Date(d["Date"]);
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth()+1)).slice(-2);
+                let year = date.getFullYear();
+                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
+                return !is_snowy;
+            }).style("opacity", 1);
+
+            sun_vid.style.display = 'none'
+            return; 
+        } if (this.classList.contains('inactive')) {  // then turn off
+            const snowy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("snow")).style('opacity', '.2');
+
+            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function(d,i) {     
+                let date = new Date(d["Date"]);
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth()+1)).slice(-2);
+                let year = date.getFullYear();
+                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
+                return !is_snowy;
+            }).style("opacity", 0);
+            
+            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function(d,i) {     
+                let date = new Date(d["Date"]);
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth()+1)).slice(-2);
+                let year = date.getFullYear();
+                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
+                return !is_snowy;
+            }).style("opacity", 0);
+
+            tooltip_info.innerHTML =`<p>cloudy days:</p>${weather_info_default_html}`;
+            this.classList.remove('inactive');
+            this.classList.add('active');
+            sun_vid.style.display = 'block';
+
+            return;
+        }
     });
 }
 

@@ -47,6 +47,16 @@
                 <source src="assets\snow.mp4" type="video/mp4">
             </video>
         </div>
+        <div id="sun-vid-container">
+        <video autoplay muted loop>
+            <source src="assets\sun.mp4" type="video/mp4">
+        </video>
+        </div>
+        <div id="cloud-vid-container">
+        <video autoplay muted loop>
+            <source src="assets\cloud.mp4" type="video/mp4">
+        </video>
+    </div>
     </div>
     <div id="my_dataviz"></div>
 </div>
@@ -255,7 +265,7 @@ li {
     display: block;
     width: 100%;
     height: 100%;
-    opacity: .5;
+    opacity: 1;
 }
 #observablehq-toc {
     display: none;
@@ -272,8 +282,21 @@ li {
     height: 1000px;
     width: 1000px;
 }
+#cloud-vid-container {
+    display: none;
+    position: absolute;
+    height: 1000px;
+    width: 1000px;
+}
+#sun-vid-container {
+    display: none;
+    position: absolute;
+    height: 1000px;
+    width: 1000px;
+}
 #tooltip-info {
     position: absolute;
+    z-index: 100;
 }
 #legend {
     display: block;
