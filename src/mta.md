@@ -148,6 +148,7 @@ buttonEventListeners(weather_data);
     padding-left: 0px;
     width: 100%;
     height: 100%;
+    max-height: 100%;
     position: relative;
 }
 #transport-icon-list li {
@@ -172,6 +173,8 @@ buttonEventListeners(weather_data);
 }
 #left-panel {
     font-family: "Roboto Mono", monospace;
+    max-height: 100vh;
+    height: 100vh;
 }
 .hero {
   display: flex;
@@ -203,7 +206,7 @@ li {
     padding-bottom: 15px;
 }
 #splash-title h1 {
-    font-size: 40px;
+    font-size: 35px;
 }
 #observablehq-center {
     margin-left: 0px;
@@ -236,6 +239,7 @@ li {
     text-align: center;
 }
 #container {
+    max-width: 78.25vw;
     position: absolute;
     width: 78.25vw;
     height: 100vh;
