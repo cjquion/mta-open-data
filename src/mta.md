@@ -114,6 +114,7 @@ buttonEventListeners(weather_data);
 #year-of-text {
     font-size: 2vw;
     margin-bottom: 5px;
+    margin-top: 5px;
 }
 #mta-transit-text {
     font-size: 2vw;
@@ -154,6 +155,7 @@ buttonEventListeners(weather_data);
     gap: 25px;
 }
 .sidebar-contents {
+    margin-top: 0px;
     padding-left: 0px;
     width: 100%;
     height: 100%;
@@ -229,7 +231,7 @@ li {
     padding-bottom: 15px;
 }
 #splash-title {
-    height: 14%;
+    height: 11vh;
 }
 #splash-title h1 {
     font-size: 35px;
