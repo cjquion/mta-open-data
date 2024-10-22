@@ -2,7 +2,8 @@
     <ol id="" class="sidebar-contents">
         <li id="splash-title" class="">
             <h1>
-            A Year of MTA Transit
+            <p id="year-of-text">A Year of</p> 
+            <p id="mta-transit-text">MTA Transit</p>
             </h1>
         </li>
         <li id="subtitle" class="">
@@ -24,8 +25,7 @@
                 <li class="icon-li inactive" id="cloud-button"><img src="./icons/icons_cloudy.svg"/></li>
             </ol>
             <ol id="buttons-list">
-                <li class="button"><p>Reset</p></li>
-                <li class="button"><p>Apply</p></li>
+                <li id="reset-button" class="button"><p>Reset</p></li>
             </ol>
         </li>
     </ol>
@@ -111,6 +111,14 @@ buttonEventListeners(weather_data);
 ```
 
 <style>
+#year-of-text {
+    font-size: 2vw;
+    margin-bottom: 5px;
+}
+#mta-transit-text {
+    font-size: 2vw;
+    margin-top: 5px;
+}
 #filters-groups div {
     padding-bottom: 25px;
     padding-top: 25px;
@@ -121,6 +129,7 @@ buttonEventListeners(weather_data);
 }
 #filters-title {
     border-bottom: solid;
+    font-size: 1vw;
 }
 #buttons-list {
     display: flex;
@@ -171,6 +180,20 @@ buttonEventListeners(weather_data);
     justify-items: center;
     justify-content: center;
 }
+#subtitle {
+    font-size: 1vw;
+}
+#reset-button p{
+    margin: 0px;
+    text-align: center;
+}
+#reset-button {
+      display: flex;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
+    justify-content: center;
+}
 #left-panel {
     font-family: "Roboto Mono", monospace;
     max-height: 100vh;
@@ -186,7 +209,7 @@ buttonEventListeners(weather_data);
   text-align: center;
 }
 #blurb {
-    font-size: .5rem;
+    font-size: 1vw;
 }
 .mta-sidebar {
     display: flex;
@@ -204,6 +227,9 @@ buttonEventListeners(weather_data);
 li {
     list-style: none;
     padding-bottom: 15px;
+}
+#splash-title {
+    height: 14%;
 }
 #splash-title h1 {
     font-size: 35px;
