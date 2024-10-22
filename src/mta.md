@@ -40,22 +40,22 @@
         </div>
         <div id="rain-vid-container">
             <video autoplay muted loop>
-                <source src="assets\rain.mp4" type="video/mp4">
+                <source src="rain.mp4" type="video/mp4">
             </video>
         </div>
         <div id="snow-vid-container">
             <video autoplay muted loop>
-                <source src="assets\snow.mp4" type="video/mp4">
+                <source src="snow.mp4" type="video/mp4">
             </video>
         </div>
         <div id="sun-vid-container">
         <video autoplay muted loop>
-            <source src="assets\sun.mp4" type="video/mp4">
+            <source src="sun.mp4" type="video/mp4">
         </video>
         </div>
         <div id="cloud-vid-container">
         <video autoplay muted loop>
-            <source src="assets\cloud.mp4" type="video/mp4">
+            <source src="cloud.mp4" type="video/mp4">
         </video>
         </div>
     </div>
@@ -261,10 +261,9 @@ li {
     align-items: center;
     justify-content: center;
     font-family: "Roboto Mono", monospace;
-      font-family: "Roboto Mono", monospace;
+    font-family: "Roboto Mono", monospace;
     overflow: hidden;
-        border-radius: 50%;
-
+    border-radius: 50%;
 }
 #tooltip {
     position: relative;
