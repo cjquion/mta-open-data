@@ -40,22 +40,22 @@
         </div>
         <div id="rain-vid-container">
             <video autoplay muted loop>
-                <source src="rain.mp4" type="video/mp4">
+                <source src="assets/rain.mp4" type="video/mp4">
             </video>
         </div>
         <div id="snow-vid-container">
             <video autoplay muted loop>
-                <source src="snow.mp4" type="video/mp4">
+                <source src="assets/snow.mp4" type="video/mp4">
             </video>
         </div>
         <div id="sun-vid-container">
         <video autoplay muted loop>
-            <source src="sun.mp4" type="video/mp4">
+            <source src="assets/sun.mp4" type="video/mp4">
         </video>
         </div>
         <div id="cloud-vid-container">
         <video autoplay muted loop>
-            <source src="cloud.mp4" type="video/mp4">
+            <source src="assets/cloud.mp4" type="video/mp4">
         </video>
         </div>
     </div>
