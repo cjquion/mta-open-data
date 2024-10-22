@@ -34,33 +34,34 @@
 <div id="container">
     <div id="legend"><img src="assets/Legend.png"/></div>
     <div id="tooltip-wrapper">
-        <div id="tooltip">
-        <div id="tooltip-info">
-            <p> Hover over a bar in the chart to display info for that day </p>
+            <div id="tooltip">
+                <div id="tooltip-info">
+                    <p> Hover over a bar in the chart to display info for that day </p>
+                </div>
+                <div id="rain-vid-container">
+                    <video autoplay muted loop>
+                        <source src="assets/rain.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div id="snow-vid-container">
+                    <video autoplay muted loop>
+                        <source src="assets/snow.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div id="sun-vid-container">
+                    <video autoplay muted loop>
+                        <source src="assets/sun.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div id="cloud-vid-container">
+                    <video autoplay muted loop>
+                        <source src="assets/cloud.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
         </div>
-        <div id="rain-vid-container">
-            <video autoplay muted loop>
-                <source src="assets/rain.mp4" type="video/mp4">
-            </video>
-        </div>
-        <div id="snow-vid-container">
-            <video autoplay muted loop>
-                <source src="assets/snow.mp4" type="video/mp4">
-            </video>
-        </div>
-        <div id="sun-vid-container">
-        <video autoplay muted loop>
-            <source src="assets/sun.mp4" type="video/mp4">
-        </video>
-        </div>
-        <div id="cloud-vid-container">
-        <video autoplay muted loop>
-            <source src="assets/cloud.mp4" type="video/mp4">
-        </video>
-        </div>
+    <div id="my_dataviz">
     </div>
-    </div>
-    <div id="my_dataviz"></div>
 </div>
 
 ```js
@@ -228,9 +229,11 @@ li {
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
-    width: min-content;
+    width: 100%;
     height: 100%;
-    display: inline-block;
+    display: block;
+    margin: auto;
+    text-align: center;
 }
 #container {
     position: absolute;
@@ -242,6 +245,9 @@ li {
 #observablehq-main {
     min-width: 100vw;
     margin-top: 0px;
+    margin: 0;
+    padding: 0;
+    padding-right: 0 !important;
     margin-bottom: 0px;
     max-height: 100vh;
     min-height: 100vh;
@@ -252,6 +258,7 @@ li {
 }
 #tooltip-wrapper {
     position: absolute;
+    box-sizing: border-box;
     height: 29.5vh;
     width: 29.5vh;
     left: 50%;
@@ -265,11 +272,17 @@ li {
     overflow: hidden;
     border-radius: 50%;
 }
+body {
+    margin: 0;
+    max-width: none;
+    max-height: 100vh;
+}
 #tooltip {
     position: relative;
     text-align: center;
     background: black;
-    color: white;
+    color: white;    
+    padding: 1rem;
     border: 0px;
     pointer-events: none;
     font-size: 1rem;

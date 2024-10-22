@@ -158,7 +158,7 @@ export function chart(weather_data, mta_data) {
         .attr("width", barWidth + barMargin.left + barMargin.right)
         .attr("height", barHeight + barMargin.top + barMargin.bottom)
         .append("g")
-        .attr("transform", "translate(" + barWidth / 2 + "," + (barHeight / 2) + ")"); // Add 100 on Y translation, cause upper bars are longer
+        .attr("transform", "translate(" + parseFloat(parseFloat(barWidth / 2) + parseFloat(10)) + "," + parseFloat(parseFloat(barHeight / 2) + parseFloat(10)) + ")"); // Add 100 on Y translation, cause upper bars are longer
   
     // SET TRAIN X scale
     var train_x = d3.scaleBand()
