@@ -8,7 +8,7 @@ export function chart(weather_data, mta_data) {
         barWidth = 1354 - barMargin.left - barMargin.right,
         barHeight = 1354 - barMargin.top - barMargin.bottom,
         barInnerRadius = 510,
-        barOuterRadius = 740;   // the outerRadius goes from the middle of the SVG area to the border
+        barOuterRadius = 615;   // the outerRadius goes from the middle of the SVG area to the border
 
     var tempMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         tempWidth = 500 - tempMargin.left - tempMargin.right,
@@ -147,7 +147,7 @@ export function chart(weather_data, mta_data) {
         .domain([temp_min, temp_max]).nice()
         .range([tempHeight - tempMargin.bottom, tempMargin.top]);
 
-    const color = d3.scaleSequential(tempy.domain(), d3.interpolateRgbBasisClosed(["#2D7BB6", "#09CCBC", "#FFFF8C", "#F9CF58", "#E76918", "#D7191D"]));
+    const color = d3.scaleSequential(tempy.domain(), d3.interpolateRgbBasis(["#2D7BB6", "#09CCBC", "#FFFF8C", "#F9CF58", "#E76918", "#D7191D"]));
     var tooltip_info = d3.select("#tooltip-info");
 
     // append the svg object to the body of the page
@@ -186,19 +186,19 @@ export function chart(weather_data, mta_data) {
   
                 if (day == 0 || day == 6) {
                     let avg_diff = (parseFloat(weekend_train_avg) - parseFloat(x)) / parseFloat(weekend_train_avg);
-                    return train_y(avg_diff);
-
+                    
                     if (avg_diff < 0) {
-                        //console.log(date)
-                        //console.log(`avg_diff ${avg_diff}`);
-                        //console.log(`train_y ${train_y(avg_diff)}`)
-                        //console.log(`barinnerradi ${barInnerRadius}`)
-                        return train_y(avg_diff);                   
+                        return barInnerRadius - (train_y(avg_diff) - barInnerRadius);
                     } else {
+                        return train_y(avg_diff);                   
                     }
                 } else {
-                    let avg_diff = (parseFloat(weekday_train_avg) - parseFloat(x)) / parseFloat(weekday_train_avg);
-                    return train_y(avg_diff);
+                    let avg_diff = (parseFloat(weekday_train_avg) - parseFloat(x))/ parseFloat(weekday_train_avg);
+                    if (avg_diff < 0) {
+                        return barInnerRadius - (train_y(avg_diff) - barInnerRadius);
+                    } else {
+                        return train_y(avg_diff);                   
+                    }
                 }
             })
             .startAngle(function (d) { return train_x(d.Date); })
@@ -257,7 +257,7 @@ export function chart(weather_data, mta_data) {
                 return tempx(`${month}/${day}/${year}`) + tempx.bandwidth(); 
             })
             .padAngle(0.05)
-            .padRadius(33)
+            .padRadius(-1)
         )
         .on('mouseover', function (event, d) {
             let date = new Date(d.datetime);
@@ -315,12 +315,21 @@ export function chart(weather_data, mta_data) {
                 let date = new Date(d["Date"]);
                 let day = date.getDay();
                 let x = d['Buses: Total Estimated Ridership'];
+    
                 if (day == 0 || day == 6) {
-                    let avg_diff = (+x - +weekend_bus_avg) / +weekend_bus_avg;
-                    return bus_y(avg_diff);
+                    let avg_diff = (parseFloat(weekend_bus_avg) - parseFloat(x)) / parseFloat(weekend_bus_avg);
+                    if (avg_diff < 0) {
+                        return busInnerRadius - (bus_y(avg_diff) - busInnerRadius);
+                    } else {
+                        return bus_y(avg_diff);                   
+                    }
                 } else {
-                    let avg_diff = (+x - +weekday_bus_avg) / +weekday_bus_avg;
-                    return bus_y(avg_diff);
+                    let avg_diff = (parseFloat(weekday_bus_avg) - parseFloat(x))/ parseFloat(weekday_bus_avg);
+                    if (avg_diff < 0) {
+                        return busInnerRadius - (bus_y(avg_diff) - busInnerRadius);
+                    } else {
+                        return bus_y(avg_diff);                   
+                    }
                 }
             })
             .startAngle(function (d) { return bus_x(d.Date); })

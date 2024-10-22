@@ -9,7 +9,7 @@
         How did weather affect ridership for trains and buses in 2023?
         </li>
         <li id="blurb" class="">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+        This infographic shows the MTA’s daily public transportation ridership as the percentage change from average (calculated for both weekdays and weekends). Explore how weather impacts ridership using the filters below.
         </li>
         <li id="filters-groups">
             <div id="filters-title" class="">Explore the chart with filters</div>
@@ -69,7 +69,7 @@ bus_button.addEventListener("click", function(e) {
     console.log(opacity);
     if (opacity == .2) {
         train_viz.style.opacity = 1;
-        bus_button.style.backgroundColor = "black";
+        bus_button.style.backgroundColor = "#2F2F3A";
     } else {
         train_viz.style.opacity = .2;
         bus_button.style.backgroundColor = "white";
@@ -86,7 +86,7 @@ train_button.addEventListener("click", function(e) {
     console.log(opacity);
     if (opacity == .2) {
         bus_viz.style.opacity = 1;
-        train_button.style.backgroundColor = "black";
+        train_button.style.backgroundColor = "#2F2F3A";
     } else {
         bus_viz.style.opacity = .2;
         train_button.style.backgroundColor = "white";
@@ -282,6 +282,15 @@ li {
 }
 .active {
     background-color: white;
+}
+#transport-icon-list li {
+    background-color: #2F2F3A;
+}
+#weather-icon-list li {
+    background-color: #2F2F3A;
+}
+#buttons-list li {
+    background-color: #2F2F3A;
 }
 </style>
 
