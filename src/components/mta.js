@@ -3,10 +3,14 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 export function chart(weather_data, mta_data) {
 
+    var height_test = window.innerHeight;
+    var width_test = window.innerWidth;
+    console.log(height_test);
+    console.log(width_test)
     // set the dimensions and margins of the graph
     var barMargin = { top: 10, right: 10, bottom: 10, left: 10 },
-        barWidth = 1354 - barMargin.left - barMargin.right,
-        barHeight = 1354 - barMargin.top - barMargin.bottom,
+        barWidth = height_test - barMargin.left - barMargin.right,
+        barHeight = height_test - barMargin.top - barMargin.bottom,
         barInnerRadius = 510,
         barOuterRadius = 615;   // the outerRadius goes from the middle of the SVG area to the border
 
