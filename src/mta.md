@@ -218,7 +218,7 @@ li {
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
-    width: 100%;
+    width: min-content;
     height: 100%;
     display: inline-block;
 }
