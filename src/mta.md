@@ -58,6 +58,43 @@ const mta_data = await FileAttachment("./data/MTA_Daily_Ridership_Data__Beginnin
 const weather_data = await FileAttachment("./data/new york city 2023-01-01 to 2023-12-31.csv").csv();
 
 chart(weather_data, mta_data)
+
+var bus_button = document.getElementById('bus-button');
+
+bus_button.addEventListener("click", function(e) {
+    e.preventDefault();
+    console.log("toggle");
+    var train_viz = document.getElementById('train-svg-g');
+    var opacity = window.getComputedStyle(train_viz).getPropertyValue("opacity");
+    console.log(opacity);
+    if (opacity == .2) {
+        train_viz.style.opacity = 1;
+        bus_button.style.backgroundColor = "black";
+    } else {
+        train_viz.style.opacity = .2;
+        bus_button.style.backgroundColor = "white";
+    }
+});
+
+var train_button = document.getElementById('train-button');
+
+train_button.addEventListener("click", function(e) {
+    e.preventDefault();
+    console.log("toggle");
+    var bus_viz = document.getElementById('bus-svg-g');
+    var opacity = window.getComputedStyle(bus_viz).getPropertyValue("opacity");
+    console.log(opacity);
+    if (opacity == .2) {
+        bus_viz.style.opacity = 1;
+        train_button.style.backgroundColor = "black";
+    } else {
+        bus_viz.style.opacity = .2;
+        train_button.style.backgroundColor = "white";
+    }
+});
+
+import {buttonEventListeners} from "./components/mta.js";
+buttonEventListeners(weather_data);
 ```
 
 <style>
@@ -248,43 +285,3 @@ li {
 }
 </style>
 
-```js
-var bus_button = document.getElementById('bus-button');
-
-bus_button.addEventListener("click", function(e) {
-    e.preventDefault();
-    console.log("toggle");
-    var train_viz = document.getElementById('train-svg-g');
-    var opacity = window.getComputedStyle(train_viz).getPropertyValue("opacity");
-    console.log(opacity);
-    if (opacity == .2) {
-        train_viz.style.opacity = 1;
-        bus_button.style.backgroundColor = "black";
-    } else {
-        train_viz.style.opacity = .2;
-        bus_button.style.backgroundColor = "grey";
-    }
-});
-
-var train_button = document.getElementById('train-button');
-
-train_button.addEventListener("click", function(e) {
-    e.preventDefault();
-    console.log("toggle");
-    var bus_viz = document.getElementById('bus-svg-g');
-    var opacity = window.getComputedStyle(bus_viz).getPropertyValue("opacity");
-    console.log(opacity);
-    if (opacity == .2) {
-        bus_viz.style.opacity = 1;
-        train_button.style.backgroundColor = "black";
-    } else {
-        bus_viz.style.opacity = .2;
-        train_button.style.backgroundColor = "grey";
-    }
-});
-```
-
-```js
-import {buttonEventListeners} from "./components/mta.js";
-buttonEventListeners();
-```
