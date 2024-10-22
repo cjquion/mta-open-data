@@ -133,6 +133,8 @@ buttonEventListeners(weather_data);
 }
 .sidebar-contents {
     padding-left: 0px;
+    width: 100%;
+    position: relative;
 }
 #transport-icon-list li {
     padding: 10px;
@@ -202,17 +204,20 @@ li {
     position: absolute;
 }
 #my_dataviz {
-    position: relative;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
     width: 100%;
     height: 100%;
-    margin-left: 301.5px;
-    margin-right: 301.5px;
+    display: inline-block;
 }
 #container {
     position: absolute;
-    width: 100vw;
+    width: 78.25vw;
     height: 100vh;
     transform: translate(21.75vw, 0);
+    text-align: center;
 }
 #observablehq-main {
     min-width: 100vw;
@@ -233,11 +238,13 @@ li {
     border: 0px;
     pointer-events: none;
     font-size: 1rem;
-    height: 400px;
-    width: 400px;
+    height: 29.5vh;
+    width: 29.5vh;
     border-radius: 50%;
-    transform: translate(754px, 448px);
     display: flex;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
     align-items: center;
     justify-content: center;
     font-family: "Roboto Mono", monospace;
@@ -271,14 +278,15 @@ li {
 #legend {
     display: block;
     position: absolute;
-    height: 100px;
-    width: 200px;
+    width: 10%;
+    height: auto;
+
 }
 #legend img {
     display: block;
     position: relative;
-    width: 200px;
-    height: 100px;
+    width: 100%;
+    height: 100%;
 }
 .active {
     background-color: white;

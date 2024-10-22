@@ -4,28 +4,26 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 export function chart(weather_data, mta_data) {
 
     var height_test = window.innerHeight;
-    var width_test = window.innerWidth;
-    console.log(height_test);
-    console.log(width_test)
+
     // set the dimensions and margins of the graph
     var barMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         barWidth = height_test - barMargin.left - barMargin.right,
         barHeight = height_test - barMargin.top - barMargin.bottom,
-        barInnerRadius = 510,
-        barOuterRadius = 615;   // the outerRadius goes from the middle of the SVG area to the border
+        barInnerRadius = parseFloat(height_test) * .3766,
+        barOuterRadius = parseFloat(height_test) * .454;   // the outerRadius goes from the middle of the SVG area to the border
 
     var tempMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         tempWidth = 500 - tempMargin.left - tempMargin.right,
         tempHeight = 500 - tempMargin.top - tempMargin.bottom,
-        tempInnerRadius = 413,
-        tempOuterRadius = 436;   // the outerRadius goes from the middle of the SVG area to the border
+        tempInnerRadius = parseFloat(height_test) * .305,
+        tempOuterRadius = parseFloat(height_test) * .322;   // the outerRadius goes from the middle of the SVG area to the border
 
     // set the dimensions and margins of the graph
     var busMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         busWidth = 900 - busMargin.left - busMargin.right,
         busHeight = 900 - busMargin.top - busMargin.bottom,
-        busInnerRadius = 292,
-        busOuterRadius = 392;   // the outerRadius goes from the middle of the SVG area to the border
+        busInnerRadius = parseFloat(height_test) * .215,
+        busOuterRadius = parseFloat(height_test) * .285;   // the outerRadius goes from the middle of the SVG area to the border
 
     var weekend_train_sum = 0;
     var weekday_train_sum = 0;
