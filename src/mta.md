@@ -369,6 +369,7 @@ body {
     position: absolute;
     font-size: .8vw;
     z-index: 100;
+    padding: 1vw;
 }
 #legend {
     display: block;

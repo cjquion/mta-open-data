@@ -225,17 +225,22 @@ export function chart(weather_data, mta_data) {
             let x = d['Subways: Total Estimated Ridership'];
             let val = 0;
             let domain = train_y.domain();
-            let weekday_or_end = ""
+            let weekday_or_end = "";
+            let avg_diff_str = "";
             if (day == 0 || day == 6) {
                 let avg_diff = (parseFloat(weekend_train_avg) -  parseFloat(x)) / parseFloat(weekend_train_avg);
                 val = avg_diff;
                 weekday_or_end = "weekend";
+                avg_diff_str += `${weekend_train_avg} ${weekday_or_end} avg riders. ${x} riders.`
+
             } else {
                 let avg_diff = (parseFloat(weekday_train_avg) - parseFloat(x)) / parseFloat(weekday_train_avg);
                 val = avg_diff;
                 weekday_or_end = "weekday";
+                avg_diff_str += `${weekend_train_avg} ${weekday_or_end} avg riders. ${x} riders.`
+
             }
-            tooltip_info.html(`<p> ${date.toDateString()}: ${val * 100}% difference from ${weekday_or_end} average </p>`);
+            tooltip_info.html(`<p> ${date.toDateString()}: ${val * 100}% difference from ${weekday_or_end} average.</p> <p>${avg_diff_str}</p>`);
         })
         .on('mouseout', function(event, d) {
             d3.select(this).style("stroke", "");
@@ -272,19 +277,23 @@ export function chart(weather_data, mta_data) {
         )
         .on('mouseover', function (event, d) {
             let date = new Date(d.datetime);
+            console.log(`date ${date}`)
             d3.select(this).style("stroke", "white");
             d3.select(this).style("stroke-width", "2px");
 
             let rain_vid = document.getElementById("rain-vid-container");
             let snow_vid = document.getElementById("snow-vid-container");
             let sun_vid = document.getElementById("sun-vid-container");
-
-            let precip_info = d.precip != 0 ? `<p>${d.preciptype}: ${d.precip} </p>` : ``
+            let cloud_vid = document.getElementById("cloud-vid-container");
+            let tooltip = document.getElementById("tooltip");
+            tooltip.style.background = 'white'
+            let precip_info = d.precip != 0 ? `<p>${d.preciptype}: ${d.precip} </p>` : ``;
             if (d.precip == 0) {    
                 rain_vid.style.display = 'none';
                 snow_vid.style.display = 'none';
             }
             if (d.precip > 0) {    
+                turn_off_all_videos();
                 if (d.preciptype.includes('snow')) {
                     snow_vid.style.display = 'block';
                 }
@@ -293,12 +302,16 @@ export function chart(weather_data, mta_data) {
                 }
             }
             if (d.cloudcover < 55) {
-                turn_off_all_videos();
                 sun_vid.style.display = 'block';
+            }
+            if (d.cloudcover > 55) {
+                cloud_vid.style.display = 'block';
             }
             tooltip_info.html( `<p>${date.toDateString()}: ${d.temp} celsius </p>` +  precip_info + `<p> cloud cover: ${d.cloudcover}</p>`);
         })
         .on('mouseout', function(event, d) {
+            tooltip.style.background = 'black'
+
             d3.select(this).style("stroke", "");
             d3.select(this).style("stroke-width", "");
         })
@@ -428,7 +441,7 @@ export function buttonEventListeners(weather_data) {
 
         let snow_button = document.getElementById("snow-button");
 
-        if (this.classList.contains('active')) {
+        if (this.classList.contains('active')) { // then turn off
             this.classList.remove('active');
             this.classList.add('inactive');
             const rainy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("rain")).style('opacity', '1');
@@ -450,8 +463,8 @@ export function buttonEventListeners(weather_data) {
                 let is_rainy = rainy_days.includes(`${year}-${month}-${day}`);
                 return !is_rainy;
             }).style("opacity", 1);
-            rain_vid.style.display = 'none'
-
+            rain_vid.style.display = 'none';
+            tooltip.style.background = 'black';
             return; 
         } if (this.classList.contains('inactive')) {
             if (snow_button.classList.contains("inactive")) {
@@ -484,6 +497,8 @@ export function buttonEventListeners(weather_data) {
             tooltip_info.innerHTML =`${weather_info_default_html}`;
             this.classList.remove('inactive');
             this.classList.add('active');
+            tooltip.style.background = 'white';
+
             return;
         }
     });
@@ -519,6 +534,8 @@ export function buttonEventListeners(weather_data) {
             }).style("opacity", 1);
 
             snow_vid.style.display = 'none'
+            tooltip.style.background = 'black';
+
             return; 
         } if (this.classList.contains('inactive')) {
             const snowy_temp_days = d3.selectAll(".temp-bar").filter((d, i) => !d.preciptype.includes("snow")).style('opacity', '.2');
@@ -545,6 +562,7 @@ export function buttonEventListeners(weather_data) {
             this.classList.remove('inactive');
             this.classList.add('active');
             snow_vid.style.display = 'block';
+            tooltip.style.background = 'white';
 
             return;
         }
@@ -582,8 +600,10 @@ export function buttonEventListeners(weather_data) {
             }).style("opacity", 1);
 
             cloud_vid.style.display = 'none'
+            tooltip.style.background = 'black';
+
             return; 
-        } if (this.classList.contains('inactive')) {  // then turn off
+        } if (this.classList.contains('inactive')) {  // then turn on
             const disable_noncloudy_days = d3.selectAll(".temp-bar").filter((d, i) => !(d.cloudcover > 55)).style('opacity', '.2');
 
             const disable_noncloudy_bus_days = d3.selectAll(".bus-bar").filter(function(d,i) {     
@@ -608,6 +628,7 @@ export function buttonEventListeners(weather_data) {
             this.classList.remove('inactive');
             this.classList.add('active');
             cloud_vid.style.display = 'block';
+            tooltip.style.background = 'white';
 
             return;
         }
@@ -646,6 +667,8 @@ export function buttonEventListeners(weather_data) {
             }).style("opacity", 1);
 
             sun_vid.style.display = 'none'
+            tooltip.style.background = 'black';
+
             return; 
         } if (this.classList.contains('inactive')) {  // then turn on
             const disable_nonsunny_days = d3.selectAll(".temp-bar").filter((d, i) => !(d.cloudcover < 24)).style('opacity', '.2');
@@ -672,6 +695,7 @@ export function buttonEventListeners(weather_data) {
             this.classList.remove('inactive');
             this.classList.add('active');
             sun_vid.style.display = 'block';
+            tooltip.style.background = 'white';
 
             return;
         }
