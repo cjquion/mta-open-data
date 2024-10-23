@@ -401,6 +401,8 @@ export function buttonEventListeners(weather_data) {
     var rain_button = document.getElementById('rain-button');
     var snow_button = document.getElementById('snow-button');
     var cloud_button = document.getElementById('cloud-button');
+    var reset_button = document.getElementById('reset-button');
+
     const weather_info_default_html = "<p>Hover over a bar to see data for that day.</p>";
     
     var rainy_days = [];
@@ -699,6 +701,24 @@ export function buttonEventListeners(weather_data) {
 
             return;
         }
+    });
+
+    reset_button.addEventListener("click", function(e) { 
+        e.preventDefault();
+
+        console.log('hi')
+        d3.selectAll(".temp-bar").style('opacity', '1');
+        d3.selectAll(".train-bar").style('opacity', '1');
+        d3.selectAll(".bus-bar").style('opacity', '1');
+        snow_button.classList.remove('active');
+        snow_button.classList.add('inactive');
+        rain_button.classList.remove('active');
+        rain_button.classList.add('inactive');
+        sun_button.classList.remove('active');
+        sun_button.classList.add('inactive');
+        cloud_button.classList.remove('active');
+        cloud_button.classList.add('inactive');
+        return;
     });
 }
 
