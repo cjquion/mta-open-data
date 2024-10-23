@@ -1,74 +1,206 @@
----
-toc: false
----
+<nav id="left-panel" class="mta-sidebar">
+    <ol id="" class="sidebar-contents">
+        <li id="splash-title" class="">
+            <h1>
+            <p id="year-of-text">A Year of</p> 
+            <p id="mta-transit-text">MTA Transit</p>
+            </h1>
+        </li>
+        <li id="subtitle" class="">
+        How did weather affect ridership for trains and buses in 2023?
+        </li>
+        <li id="blurb" class="">
+        This infographic shows the MTA’s daily public transportation ridership as the percentage change from average (calculated for both weekdays and weekends). Explore how weather impacts ridership using the filters below.
+        </li>
+        <li id="filters-groups">
+            <div id="filters-title" class="">Filters</div>
+            <ol id="transport-icon-list">
+                <li class="icon-li" id="bus-button"><img src="./icons/icons_bus.svg"/></li>
+                <li class="icon-li" id="train-button"><img src="./icons/icons_train.svg"/></li>
+            </ol> 
+            <ol id="weather-icon-list">
+                <li class="icon-li inactive" id="rain-button"><img src="./icons/icons_rain.svg"/></li>
+                <li class="icon-li inactive" id="sun-button"><img src="./icons/icons_sun.svg"/></li>
+                <li class="icon-li inactive" id="snow-button"><img src="./icons/icons_snow.svg"/></li>
+                <li class="icon-li inactive" id="cloud-button"><img src="./icons/icons_cloudy.svg"/></li>
+            </ol>
+            <ol id="buttons-list">
+                <li id="reset-button" class="button"><p>Reset</p></li>
+            </ol>
+        </li>
+    </ol>
+</nav>
 
-<div class="hero">
-  <h1>mta-open-data</h1>
-  <h2>Welcome to your new app! Edit&nbsp;<code style="font-size: 90%;">src/index.md</code> to change this page.</h2>
-  <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+<div id="container">
+    <div id="legend"><img src="assets/Legend.png"/></div>
+    <div id="tooltip-wrapper">
+            <div id="tooltip">
+                <div id="tooltip-info">
+                    <p> Hover over a bar in the chart to display info for that day </p>
+                </div>
+                <div id="rain-vid-container">
+                    <video autoplay muted loop>
+                        <source src="assets/rain.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div id="snow-vid-container">
+                    <video autoplay muted loop>
+                        <source src="assets/snow.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div id="sun-vid-container">
+                    <video autoplay muted loop>
+                        <source src="assets/sun.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div id="cloud-vid-container">
+                    <video autoplay muted loop>
+                        <source src="assets/cloud.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+    <div id="my_dataviz">
+    </div>
 </div>
 
-<div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "Your awesomeness over time 🚀",
-      subtitle: "Up and to the right!",
-      width,
-      y: {grid: true, label: "Awesomeness"},
-      marks: [
-        Plot.ruleY([0]),
-        Plot.lineY(aapl, {x: "Date", y: "Close", tip: true})
-      ] 
-    }))
-  }</div>
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "How big are penguins, anyway? 🐧",
-      width,
-      grid: true,
-      x: {label: "Body mass (g)"},
-      y: {label: "Flipper length (mm)"},
-      color: {legend: true},
-      marks: [
-        Plot.linearRegressionY(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species"}),
-        Plot.dot(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species", tip: true})
-      ]
-    }))
-  }</div>
-</div>
+```js
+import {chart} from "./components/mta.js";
 
----
+const mta_data = await FileAttachment("./data/MTA_Daily_Ridership_Data__Beginning_2020_20240930.csv").csv();
+const weather_data = await FileAttachment("./data/new york city 2023-01-01 to 2023-12-31.csv").csv();
 
-## Next steps
+chart(weather_data, mta_data)
 
-Here are some ideas of things you could try…
+var bus_button = document.getElementById('bus-button');
 
-<div class="grid grid-cols-4">
-  <div class="card">
-    Chart your own data using <a href="https://observablehq.com/framework/lib/plot"><code>Plot</code></a> and <a href="https://observablehq.com/framework/files"><code>FileAttachment</code></a>. Make it responsive using <a href="https://observablehq.com/framework/javascript#resize(render)"><code>resize</code></a>.
-  </div>
-  <div class="card">
-    Create a <a href="https://observablehq.com/framework/project-structure">new page</a> by adding a Markdown file (<code>whatever.md</code>) to the <code>src</code> folder.
-  </div>
-  <div class="card">
-    Add a drop-down menu using <a href="https://observablehq.com/framework/inputs/select"><code>Inputs.select</code></a> and use it to filter the data shown in a chart.
-  </div>
-  <div class="card">
-    Write a <a href="https://observablehq.com/framework/loaders">data loader</a> that queries a local database or API, generating a data snapshot on build.
-  </div>
-  <div class="card">
-    Import a <a href="https://observablehq.com/framework/imports">recommended library</a> from npm, such as <a href="https://observablehq.com/framework/lib/leaflet">Leaflet</a>, <a href="https://observablehq.com/framework/lib/dot">GraphViz</a>, <a href="https://observablehq.com/framework/lib/tex">TeX</a>, or <a href="https://observablehq.com/framework/lib/duckdb">DuckDB</a>.
-  </div>
-  <div class="card">
-    Ask for help, or share your work or ideas, on the <a href="https://talk.observablehq.com/">Observable forum</a>.
-  </div>
-  <div class="card">
-    Visit <a href="https://github.com/observablehq/framework">Framework on GitHub</a> and give us a star. Or file an issue if you’ve found a bug!
-  </div>
-</div>
+bus_button.addEventListener("click", function(e) {
+    e.preventDefault();
+    console.log("toggle");
+    var train_viz = document.getElementById('train-svg-g');
+    var opacity = window.getComputedStyle(train_viz).getPropertyValue("opacity");
+    console.log(opacity);
+    if (opacity == .2) {
+        train_viz.style.opacity = 1;
+        bus_button.style.backgroundColor = "black";
+    } else {
+        train_viz.style.opacity = .2;
+        bus_button.style.backgroundColor = "#2F2F3A";
+    }
+});
+
+var train_button = document.getElementById('train-button');
+
+train_button.addEventListener("click", function(e) {
+    e.preventDefault();
+    console.log("toggle");
+    var bus_viz = document.getElementById('bus-svg-g');
+    var opacity = window.getComputedStyle(bus_viz).getPropertyValue("opacity");
+    console.log(opacity);
+    if (opacity == .2) {
+        bus_viz.style.opacity = 1;
+        train_button.style.backgroundColor = "black";
+    } else {
+        bus_viz.style.opacity = .2;
+        train_button.style.backgroundColor = "#2F2F3A";
+    }
+});
+
+import {buttonEventListeners} from "./components/mta.js";
+buttonEventListeners(weather_data);
+```
 
 <style>
-
+#year-of-text {
+    font-size: 2vw;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+#mta-transit-text {
+    font-size: 2vw;
+    margin-top: 5px;
+}
+#filters-groups div {
+    padding-bottom: 25px;
+    padding-top: 0px;
+}
+#filters-groups ol {
+    padding-bottom: 25px;
+    padding-top: 25px;
+}
+#filters-title {
+    border-bottom: solid;
+    font-size: .8vw;
+    padding-bottom: 5px !important;
+}
+#buttons-list {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-evenly;
+    padding: 0px;
+}
+.button {
+    border-radius: 25px;
+    width: 75px;
+    height: 45px;
+    border: solid;
+    text-align: center;
+    padding-bottom: 0px;
+}
+#transport-icon-list, #weather-icon-list {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-evenly;
+    border-bottom: solid;
+    padding-left: 0px;
+    gap: 25px;
+}
+.sidebar-contents {
+    margin-top: 0px;
+    padding-left: 0px;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    position: relative;
+}
+#transport-icon-list li {
+    padding: 10px;
+    width: 100px;
+}
+#transport-icon-list li img {
+    max-width: 45px;
+}
+.icon-li {
+    width: 40px;
+    border-radius: 25px;
+    border: 2px solid;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-items: center;
+    justify-content: center;
+    padding: 0;
+    overflow: hidden;
+}
+#subtitle {
+    font-size: 1vw;
+}
+#reset-button p{
+    margin: 0px;
+    text-align: center;
+}
+#reset-button {
+      display: flex;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
+    justify-content: center;
+}
+#left-panel {
+    font-family: "Roboto Mono", monospace;
+    height: 100%;
+    overflow: hidden;
+}
 .hero {
   display: flex;
   flex-direction: column;
@@ -78,34 +210,183 @@ Here are some ideas of things you could try…
   text-wrap: balance;
   text-align: center;
 }
-
-.hero h1 {
-  margin: 1rem 0;
-  padding: 1rem 0;
-  max-width: none;
-  font-size: 14vw;
-  font-weight: 900;
-  line-height: 1;
-  background: linear-gradient(30deg, var(--theme-foreground-focus), currentColor);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+#blurb {
+    font-size: .7vw;
 }
-
-.hero h2 {
-  margin: 0;
-  max-width: 34em;
-  font-size: 20px;
-  font-style: initial;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--theme-foreground-muted);
+.mta-sidebar {
+    display: flex;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: black;
+    width: 21.75vw;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    padding: 50px;
 }
+li {
+    list-style: none;
+    padding-bottom: 15px;
+}
+#splash-title {
+    height: 11vh;
+}
+#splash-title h1 {
+    font-size: 35px;
+}
+#observablehq-center {
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background-color: white;
+    padding-right: 0px;
+    overflow: hidden;
+}
+#observablehq-footer {
+    display: none;
+}
+#bus_dataviz {
+    position: absolute;
+}
+#train_dataviz {
+    position: absolute;
+}
+#temp_dataviz {
+    position: absolute;
+}
+#my_dataviz {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    width: 100%;
+    height: 100%;
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+#container {
+    max-width: 78.25vw;
+    position: absolute;
+    width: 78.25vw;
+    height: 100vh;
+    transform: translate(21.75vw, 0);
+    text-align: center;
+}
+#observablehq-main {
+    min-width: 100vw;
+    margin-top: 0px;
+    margin: 0;
+    padding: 0;
+    padding-right: 0 !important;
+    margin-bottom: 0px;
+    height: 100%;
+    min-height: 100%;
+}
+#observablehq-center {
+    margin-right: 0px;
+    max-width: 100vw;
+    height: 100%;
+}
+#tooltip-wrapper {
+    position: absolute;
+    box-sizing: border-box;
+    height: 29.5vh;
+    width: 29.5vh;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Roboto Mono", monospace;
+    font-family: "Roboto Mono", monospace;
+    overflow: hidden;
+    border-radius: 50%;
+}
+body {
+    box-sizing: border-box;
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    max-width: none;
+}
+#tooltip {
+    position: relative;
+    text-align: center;
+    background: black;
+    color: white;    
+    padding: 1rem;
+    border: 0px;
+    pointer-events: none;
+    font-size: 1rem;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Roboto Mono", monospace;
+    overflow: hidden;
+}
+#tooltip video {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+}
+#observablehq-toc {
+    display: none;
+}
+#rain-vid-container {
+    display: none;
+    position: absolute;
+    height: 1000px;
+    width: 1000px;
+}
+#snow-vid-container {
+    display: none;
+    position: absolute;
+    height: 1000px;
+    width: 1000px;
+}
+#cloud-vid-container {
+    display: none;
+    position: absolute;
+    height: 1000px;
+    width: 1000px;
+}
+#sun-vid-container {
+    display: none;
+    position: absolute;
+    height: 29.5vh;
+    width: 69vh;
+}
+#tooltip-info {
+    position: absolute;
+    font-size: .8vw;
+    z-index: 100;
+    padding: 1vw;
+}
+#legend {
+    display: block;
+    position: absolute;
+    width: 20%;
+    height: auto;
 
-@media (min-width: 640px) {
-  .hero h1 {
-    font-size: 90px;
-  }
+}
+#legend img {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.active {
+    background-color: #2F2F3A;
 }
 
 </style>
+
