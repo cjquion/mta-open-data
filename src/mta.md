@@ -82,10 +82,10 @@ bus_button.addEventListener("click", function(e) {
     console.log(opacity);
     if (opacity == .2) {
         train_viz.style.opacity = 1;
-        bus_button.style.backgroundColor = "#2F2F3A";
+        bus_button.style.backgroundColor = "black";
     } else {
         train_viz.style.opacity = .2;
-        bus_button.style.backgroundColor = "white";
+        bus_button.style.backgroundColor = "#2F2F3A";
     }
 });
 
@@ -99,10 +99,10 @@ train_button.addEventListener("click", function(e) {
     console.log(opacity);
     if (opacity == .2) {
         bus_viz.style.opacity = 1;
-        train_button.style.backgroundColor = "#2F2F3A";
+        train_button.style.backgroundColor = "black";
     } else {
         bus_viz.style.opacity = .2;
-        train_button.style.backgroundColor = "white";
+        train_button.style.backgroundColor = "#2F2F3A";
     }
 });
 
@@ -170,9 +170,6 @@ buttonEventListeners(weather_data);
 #transport-icon-list li img {
     max-width: 45px;
 }
-#weather-icon-list li {
-    padding: 10px;
-}
 .icon-li {
     width: 40px;
     border-radius: 25px;
@@ -182,6 +179,8 @@ buttonEventListeners(weather_data);
     align-content: center;
     justify-items: center;
     justify-content: center;
+    padding: 0;
+    overflow: hidden;
 }
 #subtitle {
     font-size: 1vw;
@@ -363,17 +362,18 @@ body {
 #sun-vid-container {
     display: none;
     position: absolute;
-    height: 1000px;
-    width: 1000px;
+    height: 29.5vh;
+    width: 69vh;
 }
 #tooltip-info {
     position: absolute;
+    font-size: .8vw;
     z-index: 100;
 }
 #legend {
     display: block;
     position: absolute;
-    width: 10%;
+    width: 20%;
     height: auto;
 
 }
@@ -384,16 +384,8 @@ body {
     height: 100%;
 }
 .active {
-    background-color: white;
-}
-#transport-icon-list li {
     background-color: #2F2F3A;
 }
-#weather-icon-list li {
-    background-color: #2F2F3A;
-}
-#buttons-list li {
-    background-color: #2F2F3A;
-}
+
 </style>
 

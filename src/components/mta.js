@@ -2,7 +2,16 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
 export function chart(weather_data, mta_data) {
-
+    function turn_off_all_videos() {
+        var rain_vid = document.getElementById("rain-vid-container");
+        var snow_vid = document.getElementById("snow-vid-container");
+        var cloud_vid = document.getElementById("cloud-vid-container");
+        var sun_vid = document.getElementById("sun-vid-container");
+        rain_vid.style.display = 'none'
+        snow_vid.style.display = 'none'
+        cloud_vid.style.display = 'none'
+        sun_vid.style.display = 'none'
+    }
     var height_test = window.innerHeight;
 
     // set the dimensions and margins of the graph
@@ -15,15 +24,15 @@ export function chart(weather_data, mta_data) {
     var tempMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         tempWidth = 500 - tempMargin.left - tempMargin.right,
         tempHeight = 500 - tempMargin.top - tempMargin.bottom,
-        tempInnerRadius = parseFloat(height_test) * .299,
-        tempOuterRadius = parseFloat(height_test) * .312;   // the outerRadius goes from the middle of the SVG area to the border
+        tempInnerRadius = parseFloat(height_test) * .269,
+        tempOuterRadius = parseFloat(height_test) * .329;   // the outerRadius goes from the middle of the SVG area to the border
 
     // set the dimensions and margins of the graph
     var busMargin = { top: 10, right: 10, bottom: 10, left: 10 },
         busWidth = 900 - busMargin.left - busMargin.right,
         busHeight = 900 - busMargin.top - busMargin.bottom,
         busInnerRadius = parseFloat(height_test) * .215,
-        busOuterRadius = parseFloat(height_test) * .265;   // the outerRadius goes from the middle of the SVG area to the border
+        busOuterRadius = parseFloat(height_test) * .255;   // the outerRadius goes from the middle of the SVG area to the border
 
     var weekend_train_sum = 0;
     var weekday_train_sum = 0;
@@ -210,23 +219,23 @@ export function chart(weather_data, mta_data) {
         .on('mouseover', function (event, d) {
             d3.select(this).style("stroke", "white");
             d3.select(this).style("stroke-width", "2px");
-
+            turn_off_all_videos();
             let date = new Date(d["Date"]);
             let day = date.getDay();
             let x = d['Subways: Total Estimated Ridership'];
             let val = 0;
-            let day_string = "";
             let domain = train_y.domain();
+            let weekday_or_end = ""
             if (day == 0 || day == 6) {
                 let avg_diff = (parseFloat(weekend_train_avg) -  parseFloat(x)) / parseFloat(weekend_train_avg);
                 val = avg_diff;
-                day_string = "weekend";
+                weekday_or_end = "weekend";
             } else {
                 let avg_diff = (parseFloat(weekday_train_avg) - parseFloat(x)) / parseFloat(weekday_train_avg);
                 val = avg_diff;
-                day_string = "weekday";
+                weekday_or_end = "weekday";
             }
-            tooltip_info.html(`<p>${day_string} ${date.toDateString()}: ${val}</p> <p>${domain}</p>`);
+            tooltip_info.html(`<p> ${date.toDateString()}: ${val * 100}% difference from ${weekday_or_end} average </p>`);
         })
         .on('mouseout', function(event, d) {
             d3.select(this).style("stroke", "");
@@ -266,16 +275,16 @@ export function chart(weather_data, mta_data) {
             d3.select(this).style("stroke", "white");
             d3.select(this).style("stroke-width", "2px");
 
+            let rain_vid = document.getElementById("rain-vid-container");
+            let snow_vid = document.getElementById("snow-vid-container");
+            let sun_vid = document.getElementById("sun-vid-container");
+
             let precip_info = d.precip != 0 ? `<p>${d.preciptype}: ${d.precip} </p>` : ``
             if (d.precip == 0) {    
-                let rain_vid = document.getElementById("rain-vid-container");
-                let snow_vid = document.getElementById("snow-vid-container");
                 rain_vid.style.display = 'none';
                 snow_vid.style.display = 'none';
             }
             if (d.precip > 0) {    
-                let rain_vid = document.getElementById("rain-vid-container");
-                let snow_vid = document.getElementById("snow-vid-container");
                 if (d.preciptype.includes('snow')) {
                     snow_vid.style.display = 'block';
                 }
@@ -283,7 +292,11 @@ export function chart(weather_data, mta_data) {
                     rain_vid.style.display = 'block';
                 }
             }
-            tooltip_info.html( precip_info + `<p>${date.toDateString()}: ${d.temp} celsius </p>` + `<p> cloud cover: ${d.cloudcover}</p>`);
+            if (d.cloudcover < 55) {
+                turn_off_all_videos();
+                sun_vid.style.display = 'block';
+            }
+            tooltip_info.html( `<p>${date.toDateString()}: ${d.temp} celsius </p>` +  precip_info + `<p> cloud cover: ${d.cloudcover}</p>`);
         })
         .on('mouseout', function(event, d) {
             d3.select(this).style("stroke", "");
@@ -320,14 +333,14 @@ export function chart(weather_data, mta_data) {
     
                 if (day == 0 || day == 6) {
                     let avg_diff = (parseFloat(weekend_bus_avg) - parseFloat(x)) / parseFloat(weekend_bus_avg);
-                    if (avg_diff < 0) {
+                    if (avg_diff > 0) {
                         return busInnerRadius - (bus_y(avg_diff) - busInnerRadius);
                     } else {
                         return bus_y(avg_diff);                   
                     }
                 } else {
                     let avg_diff = (parseFloat(weekday_bus_avg) - parseFloat(x))/ parseFloat(weekday_bus_avg);
-                    if (avg_diff < 0) {
+                    if (avg_diff > 0) {
                         return busInnerRadius - (bus_y(avg_diff) - busInnerRadius);
                     } else {
                         return bus_y(avg_diff);                   
@@ -339,26 +352,35 @@ export function chart(weather_data, mta_data) {
             .padAngle(0.05)
             .padRadius(33))
         .on('mouseover', function (event, d) {
+            turn_off_all_videos();
             let date = new Date(d["Date"]);
             let day = date.getDay();
             let x = d['Buses: Total Estimated Ridership'];
             let val = 0;
             d3.select(this).style("stroke", "white");
             d3.select(this).style("stroke-width", "2px");
+            let weekday_or_end = ""
+            let avg_diff_str = ""
             if (day == 0 || day == 6) {
-                let avg_diff = (+x - +weekend_bus_avg) / +weekend_bus_avg;
+                let avg_diff = parseFloat(parseFloat(x) - parseFloat(weekend_bus_avg)) / parseFloat(weekend_bus_avg);
                 val = avg_diff;
+                weekday_or_end = "weekend"
+                avg_diff_str += `${weekend_bus_avg} ${weekday_or_end} avg riders. ${x} riders.`
             } else {
-                let avg_diff = (+x - +weekday_bus_avg) / +weekday_bus_avg;
+                let avg_diff = parseFloat(parseFloat(x) - parseFloat(weekday_bus_avg)) / parseFloat(weekday_bus_avg);
                 val = avg_diff;
+                weekday_or_end = "weekday"
+                avg_diff_str += `${weekday_bus_avg} ${weekday_or_end} avg. ${x} riders.`
             }
-
-            tooltip_info.html(`<p>${date.toDateString()}: ${val}</p>`);
+            tooltip_info.html(`<p>${date.toDateString()}: ${val * 100}% difference from ${weekday_or_end} average</p> <p>${avg_diff_str}</p>`);
         })
         .on('mouseout', function(event, d) {
             d3.select(this).style("stroke", "");
             d3.select(this).style("stroke-width", "");
         });
+
+        console.log(`bus_y.domain() ${bus_y.domain()}`)
+        console.log()
 }
 
 export function buttonEventListeners(weather_data) {
@@ -396,7 +418,7 @@ export function buttonEventListeners(weather_data) {
 
     rain_button.addEventListener("click", function(e) {
         e.preventDefault();
-
+        
         var tooltip = document.getElementById("tooltip");
         var tooltip_info = document.getElementById("tooltip-info");
         var rain_vid = document.getElementById("rain-vid-container");
