@@ -50,14 +50,14 @@ await import("npm:jquery-ui/dist/jquery-ui.js/+esm");
         <li id="filters-groups">
             <div id="filters-title" class="">Filters</div>
             <ol id="transport-icon-list">
-                <li class="icon-li" id="bus-button"><img src="./icons/icons_bus.svg"/></li>
-                <li class="icon-li" id="train-button"><img src="./icons/icons_train.svg"/></li>
+                <li class="icon-li" id="bus-button"><img src="./icons/icons_bus.svg"/><p>bus</p></li>
+                <li class="icon-li" id="train-button"><img src="./icons/icons_train.svg"/><p>train</p></li>
             </ol> 
             <ol id="weather-icon-list">
-                <li class="icon-li inactive" id="rain-button"><img src="./icons/icons_rain.svg"/></li>
-                <li class="icon-li inactive" id="sun-button"><img src="./icons/icons_sun.svg"/></li>
-                <li class="icon-li inactive" id="snow-button"><img src="./icons/icons_snow.svg"/></li>
-                <li class="icon-li inactive" id="cloud-button"><img src="./icons/icons_cloudy.svg"/></li>
+                <li class="icon-li inactive" id="rain-button"><img src="./icons/icons_rain.svg"/><p>rain</p></li>
+                <li class="icon-li inactive" id="sun-button"><img src="./icons/icons_sun.svg"/><p>sun</p></li>
+                <li class="icon-li inactive" id="snow-button"><img src="./icons/icons_snow.svg"/><p>snow</p></li>
+                <li class="icon-li inactive" id="cloud-button"><img src="./icons/icons_cloudy.svg"/><p>cloudy</p></li>
             </ol>
             <ol id="buttons-list">
                 <li id="reset-button" class="button"><p>Reset</p></li>
@@ -143,37 +143,37 @@ train_button.addEventListener("click", function(e) {
     }
 });
 
-const slider = $("#slider");
-slider.slider({
-    range: true,
-    min: -14.2,
-    max: 33.7,
-    values: [-14.2, 33.7],
-    slide: function(event, ui) {
-        var opt = $(this).data().uiSlider.options;
-        $("#left").remove();
-        $("#right").remove();
-        var left_val = opt.values[0];
-        var left_pos = left_val/(Math.abs(opt.min) + opt.max);
-        var right_val = opt.values[1];
-        var right_pos = right_val/(Math.abs(opt.min) + opt.max);
-
-        const selected_temp_button = $('.selected-temp');
-        if (selected_temp_button.attr("id") == "fahrenheit") {
-            left_val = c_to_f(left_val)
-            right_val = c_to_f(right_val)
-        }
-
-        var left_ele = $('<label id="left">' + (left_val) + '°</label>').css('left', left_pos*100+29 + '%');
-        var right_ele = $('<label id="right">' + (right_val) + '°</label>').css('left',  + (right_pos*100)+29 + '%');
-        $("#slider").append(left_ele);
-        $("#slider").append(right_ele);
-        console.log(opt.values)
-        onSlide(event, ui, opt.values);
-    } // report changed value
-})
 $(
     function () {
+        const slider = $("#slider");
+        slider.slider({
+            range: true,
+            min: -14.2,
+            max: 33.7,
+            values: [-14.2, 33.7],
+            slide: function(event, ui) {
+                var opt = $(this).data().uiSlider.options;
+                $("#left").remove();
+                $("#right").remove();
+                var left_val = opt.values[0];
+                var left_pos = left_val/(Math.abs(opt.min) + opt.max);
+                var right_val = opt.values[1];
+                var right_pos = right_val/(Math.abs(opt.min) + opt.max);
+
+                const selected_temp_button = $('.selected-temp');
+                if (selected_temp_button.attr("id") == "fahrenheit") {
+                    left_val = c_to_f(left_val)
+                    right_val = c_to_f(right_val)
+                }
+
+                var left_ele = $('<label id="left">' + (left_val) + '°</label>').css('left', left_pos*100+24 + '%');
+                var right_ele = $('<label id="right">' + (right_val) + '°</label>').css('left',  + (right_pos*100)+24 + '%');
+                $("#slider").append(left_ele);
+                $("#slider").append(right_ele);
+                console.log(opt.values)
+                onSlide(event, ui, opt.values);
+            } // report changed value
+        })
         $('#slider').data("uiSlider")._slide();
     }
 )
@@ -218,10 +218,16 @@ $(
 }
 #transport-icon-list, #weather-icon-list {
     display: flex;
-    flex-flow: row;
+    flex-flow: column;
     justify-content: space-evenly;
     padding-left: 0px;
-    gap: 25px;
+    gap: 10px;
+}
+.icon-li p {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
 }
 #weather-icon-list {
     border-bottom: solid;
@@ -236,14 +242,23 @@ $(
     position: relative;
 }
 #transport-icon-list li {
-    padding: 10px;
-    width: 50px;
+    padding: 5px;
+    width: 100%;
 }
 #transport-icon-list li img {
-    max-width: 30px;
+    max-width: 10px;
 }
 .icon-li {
-    width: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    overflow: hidden;
+    height: 9px;
+    padding-left: 5px;
+    padding-bottom: 5px;
+}
+.old-icon-li {
     border-radius: 25px;
     border: 2px solid;
     display: flex;
@@ -251,8 +266,10 @@ $(
     align-content: center;
     justify-items: center;
     justify-content: center;
-    padding: 0;
-    overflow: hidden;
+    padding: 10px;
+}
+.icon-li img {
+    max-width: 10px;
 }
 #subtitle {
     font-size: 1vw;
@@ -297,8 +314,8 @@ $(
     box-sizing: border-box;
     overflow-y: auto;
     padding: 40px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 29px;
+    padding-right: 29px;
 }
 li {
     list-style: none;
@@ -306,6 +323,7 @@ li {
 }
 #splash-title {
     height: 11vh;
+    padding-bottom: 0;
 }
 #splash-title h1 {
     font-size: 35px;
@@ -462,7 +480,7 @@ body {
 }
 #temp-unit-selector {
     display: flex;
-    gap: 35px;
+    gap: 65px;
 }
 .temp-unit-button {
     border: 1px solid white;
@@ -498,32 +516,40 @@ body {
 #temp-range-container {
     position: relative;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 #temp-range-inputs {
     display: flex;
     flex-direction: row;
     gap: 20px;
     width: 100%;
+    justify-content: space-between;
 }
 #temp-range-inputs input { 
     width: 95%;
-    height: 25px;
+    height: 15px;
     padding: 4px;
     background-color: white;
     border: none;
     color: black;
     font-size: .6vw;
 }
+#temp-range-inputs p {
+    margin: 9px;
+    margin-left: 0;
+    margin-right: 0;
+}
 #temp-range-sliders input {
     position: absolute;
     pointer-events: none;
 }
 #temps {
-    height: 19%;
+    height: 15%;
     border-top: 1px solid white;
     padding-top: 15px;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding-bottom: 5px;
 }
 #temp-filter-title {
     font-size: .9vw;
@@ -540,8 +566,8 @@ body {
     border-radius: 5px;
 }
 .ui-slider .ui-slider-handle {
-    width: .6em;
-    height: .6em;
+    width: .4em;
+    height: .4em;
     border-radius: 50%;
     background-color: rgb(52, 104, 228);
     border: 1px solid white;
