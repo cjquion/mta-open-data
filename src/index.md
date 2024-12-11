@@ -168,7 +168,8 @@ slider.slider({
         var right_ele = $('<label id="right">' + (right_val) + '°</label>').css('left',  + (right_pos*100)+29 + '%');
         $("#slider").append(left_ele);
         $("#slider").append(right_ele);
-        onSlide(event, ui);
+        console.log(opt.values)
+        onSlide(event, ui, opt.values);
     } // report changed value
 })
 $(
@@ -296,6 +297,8 @@ $(
     box-sizing: border-box;
     overflow-y: auto;
     padding: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 li {
     list-style: none;
@@ -519,6 +522,8 @@ body {
     height: 19%;
     border-top: 1px solid white;
     padding-top: 15px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 #temp-filter-title {
     font-size: .9vw;
@@ -561,6 +566,7 @@ body {
 }
 .slider-container {
     height: 40px;
+    width: 100%;
     display: flex;
     align-items: center;
 }

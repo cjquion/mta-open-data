@@ -5,13 +5,13 @@ import 'jquery-ui-bundle';
 
 
 export function c_to_f(deg) {
-    let res = (deg * (9/5)) + 32;
+    let res = (deg * (9 / 5)) + 32;
 
-    return Number( res.toPrecision(3) )
+    return Number(res.toPrecision(3))
 }
 export function f_to_c(deg) {
-    let res = (deg - 32) * (5/9)
-    return Number( res.toPrecision(3) )
+    let res = (deg - 32) * (5 / 9)
+    return Number(res.toPrecision(3))
 }
 function to_slash_date(d) {
     let date = new Date(d);
@@ -20,8 +20,15 @@ function to_slash_date(d) {
     let year = date.getFullYear();
     return `${month}/${day}/${year}`
 }
+function to_dash_date(d) {
+    let date = new Date(d);
+    let day = ('0' + date.getDate()).slice(-2);
+    let month = ('0' + (date.getMonth() + 1)).slice(-2);
+    let year = date.getFullYear();
+    return `${year}-${month}-${day}`
+}
 export function chart(weather_data, mta_data) {
- 
+
     function turn_off_all_videos() {
         var rain_vid = document.getElementById("rain-vid-container");
         var snow_vid = document.getElementById("snow-vid-container");
@@ -352,18 +359,10 @@ export function chart(weather_data, mta_data) {
             .innerRadius(tempInnerRadius)
             .outerRadius(function (d) { return tempOuterRadius }) // Keep temp bar height uniform for styling. Color will represent range.
             .startAngle(function (d) {
-                let date = new Date(d.datetime);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                return tempx(`${month}/${day}/${year}`);
+                return tempx(to_slash_date(d.datetime))
             })
             .endAngle(function (d) {
-                let date = new Date(d.datetime);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                return tempx(`${month}/${day}/${year}`) + tempx.bandwidth();
+                return tempx(to_slash_date(d.datetime)) + tempx.bandwidth();
             })
             .padAngle(0.05)
             .padRadius(-1)
@@ -435,6 +434,46 @@ export function chart(weather_data, mta_data) {
             d3.select(this).style("stroke", "");
             d3.select(this).style("stroke-width", "");
         });
+
+    function getFirstDaysOfYear(year) {
+        const firstDays = [];
+
+        for (let month = 0; month < 12; month++) {
+            firstDays.push(new Date(year, month, 1));
+        }
+
+        return firstDays;
+    }
+
+    // Example usage:
+    const firstDaysOf2023 = getFirstDaysOfYear(2023);
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    // month labels
+    dataviz_svg.append("g")
+        .selectAll("g")
+        .data(weather_data)
+        .enter()
+        .append("g")
+        .attr("text-anchor", function (d) {
+            return (tempx(to_slash_date(d.datetime)) + tempx.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI;
+        })
+        .attr("transform", function (d) {
+            return "rotate(" + ((tempx(to_slash_date(d.datetime)) + tempx.bandwidth() / 2) * 180 / Math.PI - 90) + ")" + "translate(" + (tempInnerRadius-20) + ",0)";
+        })
+        .append("text")
+        .text(function (d) {
+            if (firstDaysOf2023.find(item => {return to_dash_date(item) == d.datetime})) {
+                return (monthNames[new Date(d.datetime).getMonth()])
+            }
+        })
+        .attr("transform", function (d) {
+            return (tempx(d.datetime) + tempx.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "rotate(180)" : "rotate(90)" ;
+        })
+        .style("font-size", "11px")
+        .style("font-family", "Roboto Mono, monospace")
+        .attr("alignment-baseline", "middle");
 
     var sun_button = document.getElementById('sun-button');
     var rain_button = document.getElementById('rain-button');
@@ -811,18 +850,18 @@ export function chart(weather_data, mta_data) {
     });
 }
 
-export function onSlide(event, ui) {
+export function onSlide(event, ui, values) {
     var out_of_range = d3.selectAll(".temp-bar")
-        .filter((d, i) => d.tempmin < ui.values[0] || d.tempmin > ui.values[1])
-            .style('opacity', '0')
-            .attr("pointer-events", "none");
+        .filter((d, i) => d.tempmin < values[0] || d.tempmin > values[1])
+        .style('opacity', '0')
+        .attr("pointer-events", "none");
     var in_range = d3.selectAll(".temp-bar")
-    .filter((d, i) => d.tempmin > ui.values[0] && d.tempmax < ui.values[1])
+        .filter((d, i) => d.tempmin > values[0] && d.tempmax < values[1])
         .style('opacity', '1')
         .attr("pointer-events", "all");
     var out_of_range_dates = d3.selectAll(".temp-bar")
-        .filter((d, i) => d.tempmin < ui.values[0] || d.tempmin > ui.values[1])
-        ._groups[0].map(d=>to_slash_date(d.__data__.datetime))
+        .filter((d, i) => d.tempmin < values[0] || d.tempmin > values[1])
+        ._groups[0].map(d => to_slash_date(d.__data__.datetime))
     const out_of_range_train_bars = d3.selectAll(".train-bar")
         .filter((d, i) => out_of_range_dates.includes(d.Date))
         .style('opacity', '0')
@@ -839,7 +878,4 @@ export function onSlide(event, ui) {
         .filter((d, i) => !out_of_range_dates.includes(d.Date))
         .style('opacity', '1')
         .attr("pointer-events", "all");
-
-    console.log(out_of_range_train_bars)
-    console.log(out_of_range_dates)
 }
