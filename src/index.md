@@ -1,3 +1,12 @@
+<link rel="stylesheet" href="./jquery-ui.css" type="text/css">
+
+<link rel="stylesheet" href="npm:jquery-ui/dist/themes/base/jquery-ui.css">
+
+```js
+const $ = self.jQuery = (await import("npm:jquery/dist/jquery.js/+esm")).default;
+await import("npm:jquery-ui/dist/jquery-ui.js/+esm");
+```
+
 <nav id="left-panel" class="mta-sidebar">
     <ol id="" class="sidebar-contents">
         <li id="splash-title" class="">
@@ -11,6 +20,32 @@
         </li>
         <li id="blurb" class="">
         This infographic shows the MTA’s daily public transportation ridership as the percentage change from average (calculated for both weekdays and weekends). Explore how weather impacts ridership using the filters below.
+        </li>
+        <li id="temps">
+            <div id="temp-filter">
+                <div id="temp-filter-title">
+                    <div id="temp-unit-selector">
+                        <label for="temp-range" id="temp-label">Temperature Range:</label>
+                        <div id="temp-toggle">
+                            <div class="temp-unit-button" id="fahrenheit">°F</div>
+                            <div class="temp-unit-button selected-temp" id="celsius">°C</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="temp-range-container">
+                <div id="temp-range-inputs">
+                    <p>
+                        <input class="temp-range-input" type="text" id="temp-range-min" readonly="" style="border:0; color:white; font-weight:bold;" placeholder="Min">
+                    </p>
+                    <p>
+                        <input class="temp-range-input" type="text" id="temp-range-max" readonly="" style="border:0; color:white; font-weight:bold;" placeholder="Max">
+                    </p>
+                </div>
+                <div class="slider-container">
+                    <div style="max-width: 320px;" id="slider"></div>
+                </div>
+            </div>
         </li>
         <li id="filters-groups">
             <div id="filters-title" class="">Filters</div>
@@ -66,6 +101,8 @@
 
 ```js
 import {chart} from "./components/mta.js";
+import {onSlide} from "./components/mta.js";
+import {c_to_f, f_to_c} from "./components/mta.js";
 
 const mta_data = await FileAttachment("./data/MTA_Daily_Ridership_Data__Beginning_2020_20240930.csv").csv();
 const weather_data = await FileAttachment("./data/new york city 2023-01-01 to 2023-12-31.csv").csv();
@@ -106,8 +143,39 @@ train_button.addEventListener("click", function(e) {
     }
 });
 
-import {buttonEventListeners} from "./components/mta.js";
-buttonEventListeners(weather_data);
+const slider = $("#slider");
+slider.slider({
+    range: true,
+    min: -14.2,
+    max: 33.7,
+    values: [-14.2, 33.7],
+    slide: function(event, ui) {
+        var opt = $(this).data().uiSlider.options;
+        $("#left").remove();
+        $("#right").remove();
+        var left_val = opt.values[0];
+        var left_pos = left_val/(Math.abs(opt.min) + opt.max);
+        var right_val = opt.values[1];
+        var right_pos = right_val/(Math.abs(opt.min) + opt.max);
+
+        const selected_temp_button = $('.selected-temp');
+        if (selected_temp_button.attr("id") == "fahrenheit") {
+            left_val = c_to_f(left_val)
+            right_val = c_to_f(right_val)
+        }
+
+        var left_ele = $('<label id="left">' + (left_val) + '°</label>').css('left', left_pos*100+29 + '%');
+        var right_ele = $('<label id="right">' + (right_val) + '°</label>').css('left',  + (right_pos*100)+29 + '%');
+        $("#slider").append(left_ele);
+        $("#slider").append(right_ele);
+        onSlide(event, ui);
+    } // report changed value
+})
+$(
+    function () {
+        $('#slider').data("uiSlider")._slide();
+    }
+)
 ```
 
 <style>
@@ -125,8 +193,8 @@ buttonEventListeners(weather_data);
     padding-top: 0px;
 }
 #filters-groups ol {
-    padding-bottom: 25px;
-    padding-top: 25px;
+    padding-bottom: 5px;
+    padding-top: 10px;
 }
 #filters-title {
     border-bottom: solid;
@@ -151,9 +219,12 @@ buttonEventListeners(weather_data);
     display: flex;
     flex-flow: row;
     justify-content: space-evenly;
-    border-bottom: solid;
     padding-left: 0px;
     gap: 25px;
+}
+#weather-icon-list {
+    border-bottom: solid;
+    padding-bottom: 10px !important;
 }
 .sidebar-contents {
     margin-top: 0px;
@@ -165,10 +236,10 @@ buttonEventListeners(weather_data);
 }
 #transport-icon-list li {
     padding: 10px;
-    width: 100px;
+    width: 50px;
 }
 #transport-icon-list li img {
-    max-width: 45px;
+    max-width: 30px;
 }
 .icon-li {
     width: 40px;
@@ -224,7 +295,7 @@ buttonEventListeners(weather_data);
     height: 100%;
     box-sizing: border-box;
     overflow-y: auto;
-    padding: 50px;
+    padding: 40px;
 }
 li {
     list-style: none;
@@ -376,7 +447,6 @@ body {
     position: absolute;
     width: 20%;
     height: auto;
-
 }
 #legend img {
     display: block;
@@ -387,6 +457,112 @@ body {
 .active {
     background-color: #2F2F3A;
 }
-
+#temp-unit-selector {
+    display: flex;
+    gap: 35px;
+}
+.temp-unit-button {
+    border: 1px solid white;
+    font-size: 8px;
+}
+#temp-filter {
+    display: flex;
+    flex-direction: column;
+}
+#fahrenheit {
+    border-radius: 50% 0% 0% 50%;
+    padding-top: 5px;
+    padding-left: 8px;
+    padding-right: 7px;
+    padding-bottom: 5px;
+}
+#celsius {
+    border-radius: 0% 50% 50% 0%;
+    padding-top: 5px;
+    padding-left: 7px;
+    padding-right: 8px;
+    padding-bottom: 5px;
+}
+#temp-filter-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.selected-temp {
+    background-color: white;
+    color: black;
+}
+#temp-range-container {
+    position: relative;
+    width: 100%;
+}
+#temp-range-inputs {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+}
+#temp-range-inputs input { 
+    width: 95%;
+    height: 25px;
+    padding: 4px;
+    background-color: white;
+    border: none;
+    color: black;
+    font-size: .6vw;
+}
+#temp-range-sliders input {
+    position: absolute;
+    pointer-events: none;
+}
+#temps {
+    height: 19%;
+    border-top: 1px solid white;
+    padding-top: 15px;
+}
+#temp-filter-title {
+    font-size: .9vw;
+}
+#slider {
+    width: 100%;
+    height: 2px;
+}
+#temp-toggle {
+    display: flex;
+    flex-direction: row;
+}
+.temp-range-input {
+    border-radius: 5px;
+}
+.ui-slider .ui-slider-handle {
+    width: .6em;
+    height: .6em;
+    border-radius: 50%;
+    background-color: rgb(52, 104, 228);
+    border: 1px solid white;
+}
+.ui-slider-range.ui-corner-all.ui-widget-header {
+    background-color: rgb(52, 104, 228);
+}
+.ui-widget.ui-widget-content {
+    border: 0;
+}
+#temp-label {
+    font-size: .8vw;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+#left, #right {
+    position: absolute;
+    color: white;
+    bottom: 6px;
+    font-size: .8em;
+}
+.slider-container {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
 </style>
 
