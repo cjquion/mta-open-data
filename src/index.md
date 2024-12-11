@@ -231,6 +231,7 @@ $(
 }
 #weather-icon-list {
     border-bottom: 1px solid;
+    padding-top: 5px !important;
     padding-bottom: 10px !important;
 }
 .sidebar-contents {
@@ -254,7 +255,7 @@ $(
     flex-direction: row;
     gap: 10px;
     overflow: hidden;
-    height: 9px;
+    height: 15px;
     padding-left: 5px;
     padding-bottom: 5px;
 }
