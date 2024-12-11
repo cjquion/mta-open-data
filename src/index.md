@@ -198,7 +198,7 @@ $(
     padding-top: 10px;
 }
 #filters-title {
-    border-bottom: solid;
+    border-bottom: 1px solid;
     font-size: .8vw;
     padding-bottom: 5px !important;
 }
@@ -230,7 +230,7 @@ $(
     align-items: center;
 }
 #weather-icon-list {
-    border-bottom: solid;
+    border-bottom: 1px solid;
     padding-bottom: 10px !important;
 }
 .sidebar-contents {
