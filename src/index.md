@@ -481,6 +481,8 @@ body {
 }
 #temp-unit-selector {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
     gap: 65px;
 }
 .temp-unit-button {
@@ -517,6 +519,7 @@ body {
 #temp-range-container {
     position: relative;
     width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -551,6 +554,10 @@ body {
     border-top: 1px solid white;
     padding-top: 15px;
     padding-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
 }
 #temp-filter-title {
     font-size: .9vw;
@@ -592,10 +599,15 @@ body {
     font-size: .8em;
 }
 .slider-container {
-    height: 40px;
+    min-height: 40px;
+    height: 100%;
     width: 100%;
     display: flex;
     align-items: center;
+    justify-content: center;
+}
+#temps.div { 
+   margin-bottom: 3px;  
 }
 </style>
 
