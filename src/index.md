@@ -36,14 +36,14 @@ await import("npm:jquery-ui/dist/jquery-ui.js/+esm");
             <div id="temp-range-container">
                 <div id="temp-range-inputs">
                     <p>
-                        <input class="temp-range-input" type="text" id="temp-range-min" readonly="" style="border:0; color:white; font-weight:bold;" placeholder="Min">
+                        <input class="temp-range-input" type="text" id="temp-range-min" readonly="" style="border:0; font-weight:bold;" placeholder="Min">
                     </p>
                     <p>
-                        <input class="temp-range-input" type="text" id="temp-range-max" readonly="" style="border:0; color:white; font-weight:bold;" placeholder="Max">
+                        <input class="temp-range-input" type="text" id="temp-range-max" readonly="" style="border:0; font-weight:bold;" placeholder="Max">
                     </p>
                 </div>
                 <div class="slider-container">
-                    <div style="max-width: 320px;" id="slider"></div>
+                    <div style="max-width: 90%; right: 2%" id="slider"></div>
                 </div>
             </div>
         </li>
@@ -166,8 +166,8 @@ $(
                     right_val = c_to_f(right_val)
                 }
 
-                var left_ele = $('<label id="left">' + (left_val) + '°</label>').css('left', left_pos*100+24 + '%');
-                var right_ele = $('<label id="right">' + (right_val) + '°</label>').css('left',  + (right_pos*100)+24 + '%');
+                var left_ele = $('<label id="left">' + (left_val) + '°</label>').css({'left': left_pos*100+25 + '%', 'bottom': '14px'});
+                var right_ele = $('<label id="right">' + (right_val) + '°</label>').css({'left': + (right_pos*100)+25 + '%', 'bottom': '14px'});
                 $("#slider").append(left_ele);
                 $("#slider").append(right_ele);
                 console.log(opt.values)
@@ -302,6 +302,10 @@ $(
 }
 #blurb {
     font-size: .7vw;
+}
+.ui-slider-horizontal .ui-slider-handle {
+	top: -.3em;
+	margin-left: -0.3em;
 }
 .mta-sidebar {
     display: flex;
@@ -574,14 +578,15 @@ body {
     border-radius: 5px;
 }
 .ui-slider .ui-slider-handle {
-    width: .4em;
-    height: .4em;
+    width: .9em;
+    height: .9em;
     border-radius: 50%;
     background-color: rgb(52, 104, 228);
-    border: 1px solid white;
+    border: 2px solid white;
 }
 .ui-slider-range.ui-corner-all.ui-widget-header {
     background-color: rgb(52, 104, 228);
+    height: 8px;
 }
 .ui-widget.ui-widget-content {
     border: 0;
