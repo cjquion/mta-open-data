@@ -223,15 +223,15 @@ export function chart(weather_data, mta_data) {
             let avg_diff = (parseFloat(weekend_train_avg) - parseFloat(x)) / parseFloat(weekend_train_avg);
             val = avg_diff;
             weekday_or_end = "weekend";
-            avg_diff_str += `${weekend_train_avg} ${weekday_or_end} avg riders. ${x} riders.`
+            avg_diff_str += `${weekend_train_avg.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} ${weekday_or_end} avg riders. ${x} riders.`
         } else {
             let avg_diff = (parseFloat(weekday_train_avg) - parseFloat(x)) / parseFloat(weekday_train_avg);
             val = avg_diff;
             weekday_or_end = "weekday";
-            avg_diff_str += `${weekend_train_avg} ${weekday_or_end} avg riders. ${x} riders.`
+            avg_diff_str += `${weekend_train_avg.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} ${weekday_or_end} avg riders. ${x} riders.`
         }
 
-        var tooltip_text = `<p> ${date.toDateString()}: ${val * 100}% difference from ${weekday_or_end} average.</p> <p>${avg_diff_str}</p>`;
+        var tooltip_text = `<p> ${date.toDateString()}: ${(val * 100).toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}% difference from ${weekday_or_end} average.</p> <p>${avg_diff_str}</p>`;
         tooltip_info.html(tooltip_text);
     }
 
@@ -291,14 +291,14 @@ export function chart(weather_data, mta_data) {
             let avg_diff = parseFloat(parseFloat(x) - parseFloat(weekend_bus_avg)) / parseFloat(weekend_bus_avg);
             val = avg_diff;
             weekday_or_end = "weekend"
-            avg_diff_str += `${weekend_bus_avg} ${weekday_or_end} avg riders. ${x} riders.`
+            avg_diff_str += `${weekend_bus_avg.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} ${weekday_or_end} avg riders. ${x} riders.`
         } else {
             let avg_diff = parseFloat(parseFloat(x) - parseFloat(weekday_bus_avg)) / parseFloat(weekday_bus_avg);
             val = avg_diff;
             weekday_or_end = "weekday"
-            avg_diff_str += `${weekday_bus_avg} ${weekday_or_end} avg. ${x} riders.`
+            avg_diff_str += `${weekday_bus_avg.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]} ${weekday_or_end} avg. ${x} riders.`
         }
-        tooltip_info.html(`<p>${date.toDateString()}: ${val * 100}% difference from ${weekday_or_end} average</p> <p>${avg_diff_str}</p>`);
+        tooltip_info.html(`<p>${date.toDateString()}: ${(val * 100).toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]}% difference from ${weekday_or_end} average</p> <p>${avg_diff_str}</p>`);
     }
 
     // ADD TRAIN SVG
