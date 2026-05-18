@@ -553,6 +553,12 @@ body {
     font-weight: 600;
     line-height: 1.2;
 }
+#tooltip-info .tooltip-filter-days {
+    font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
+    font-weight: 600;
+    line-height: 1.2;
+    opacity: 0.95;
+}
 #tooltip-info .tooltip-label {
     opacity: 0.85;
 }

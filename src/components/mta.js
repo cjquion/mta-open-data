@@ -34,35 +34,61 @@ const CENTER_CIRCLE_BG = "#14171F";
 
 export let tempSliderBounds = { min: -14.2, max: 33.7 };
 
-const TRANSPORT_FADED_OPACITY = 0.2;
+const INACTIVE_BAR_FILL = "#EAEBEF";
+let applyChartFiltersImpl = null;
 
-export function setTransportFilter(mode) {
+function rememberBarFill(el) {
+    const fill = el.attr("fill");
+    if (fill && fill !== INACTIVE_BAR_FILL) {
+        el.attr("data-active-fill", fill);
+    }
+}
+
+export function setBarActive(el) {
+    const activeFill = el.attr("data-active-fill");
+    if (activeFill) el.attr("fill", activeFill);
+    el.style("opacity", 1).attr("pointer-events", "all");
+}
+
+export function setBarInactive(el) {
+    rememberBarFill(el);
+    el.attr("fill", INACTIVE_BAR_FILL).style("opacity", 1).attr("pointer-events", "none");
+}
+
+export function restoreAllBars() {
+    d3.selectAll(".temp-bar, .train-bar, .bus-bar").each(function () {
+        setBarActive(d3.select(this));
+    });
     const trainViz = document.getElementById("train-svg-g");
     const busViz = document.getElementById("bus-svg-g");
-    const busButton = document.getElementById("bus-button");
-    const trainButton = document.getElementById("train-button");
-    if (!trainViz || !busViz || !busButton || !trainButton) return;
-
-    const showBoth = mode === "both";
-    trainViz.style.opacity = showBoth || mode === "train" ? 1 : TRANSPORT_FADED_OPACITY;
-    busViz.style.opacity = showBoth || mode === "bus" ? 1 : TRANSPORT_FADED_OPACITY;
-
-    busButton.classList.toggle("active", showBoth || mode === "bus");
-    busButton.classList.toggle("inactive", mode === "train");
-    trainButton.classList.toggle("active", showBoth || mode === "train");
-    trainButton.classList.toggle("inactive", mode === "bus");
+    if (trainViz) trainViz.style.opacity = 1;
+    if (busViz) busViz.style.opacity = 1;
 }
 
 function getTransportFilterMode() {
+    const busButton = document.getElementById("bus-button");
+    const trainButton = document.getElementById("train-button");
+    if (busButton?.classList.contains("inactive")) return "bus";
+    if (trainButton?.classList.contains("inactive")) return "train";
+    return "both";
+}
+
+export function setTransportFilter(mode) {
+    const busButton = document.getElementById("bus-button");
+    const trainButton = document.getElementById("train-button");
     const trainViz = document.getElementById("train-svg-g");
     const busViz = document.getElementById("bus-svg-g");
-    if (!trainViz || !busViz) return "both";
+    if (!busButton || !trainButton) return;
 
-    const trainOpacity = parseFloat(getComputedStyle(trainViz).opacity);
-    const busOpacity = parseFloat(getComputedStyle(busViz).opacity);
-    if (trainOpacity < 0.5 && busOpacity >= 0.5) return "bus";
-    if (busOpacity < 0.5 && trainOpacity >= 0.5) return "train";
-    return "both";
+    busButton.classList.toggle("active", mode === "both" || mode === "bus");
+    busButton.classList.toggle("inactive", mode === "train");
+    trainButton.classList.toggle("active", mode === "both" || mode === "train");
+    trainButton.classList.toggle("inactive", mode === "bus");
+
+    if (trainViz) trainViz.style.opacity = 1;
+    if (busViz) busViz.style.opacity = 1;
+
+    if (applyChartFiltersImpl) applyChartFiltersImpl();
 }
 
 export function initTransportFilters(signal) {
@@ -553,6 +579,7 @@ export async function chart(weather_data, mta_data) {
         .append("path")
         .attr("class", "train-bar")
         .attr("fill", "#0038A4")
+        .attr("data-active-fill", "#0038A4")
         .attr("d", d3.arc()     // imagine your doing a part of a donut plot
             .innerRadius(barInnerRadius)
             .outerRadius(function (d) {
@@ -617,12 +644,15 @@ export async function chart(weather_data, mta_data) {
         .on('mouseout', function (event, d) {
             set_tooltip_background();
             turn_off_all_videos();
-            tooltip_info.html('<p>Hover over a bar in the chart to display info for that day</p>');
+            tooltip_info.html(tooltip_idle_html);
 
             d3.select(this).style("stroke", "");
             d3.select(this).style("stroke-width", "");
         })
-        .style('fill', function (d) { return color(d.temp) });
+        .each(function (d) {
+            const fill = color(d.temp);
+            d3.select(this).attr("fill", fill).attr("data-active-fill", fill);
+        });
 
     // X scale
     var bus_x = d3.scaleBand()
@@ -644,6 +674,7 @@ export async function chart(weather_data, mta_data) {
         .append("path")
         .attr("class", "bus-bar")
         .attr("fill", "#6DBF45")
+        .attr("data-active-fill", "#6DBF45")
         .attr("d", d3.arc()     // imagine your doing a part of a donut plot
             .innerRadius(busInnerRadius)
             .outerRadius(function (d) {
@@ -729,7 +760,27 @@ export async function chart(weather_data, mta_data) {
     var fahrenheit_button = document.getElementById('fahrenheit');
     var celsius_button = document.getElementById('celsius');
 
-    const weather_info_default_html = "<p>Hover over a bar to see data for that day.</p>";
+    const tooltip_idle_html = "<p>Hover over a bar in the chart to display info for that day</p>";
+
+    function format_filter_days_header(label) {
+        return `<p class="tooltip-filter-days">${label}</p>`;
+    }
+
+    function syncFilterTooltipHeader() {
+        const el = document.getElementById("tooltip-info");
+        if (!el) return;
+        if (rain_button.classList.contains("active")) {
+            el.innerHTML = format_filter_days_header("rainy days") + tooltip_idle_html;
+        } else if (snow_button.classList.contains("active")) {
+            el.innerHTML = format_filter_days_header("snowy days") + tooltip_idle_html;
+        } else if (cloud_button.classList.contains("active")) {
+            el.innerHTML = format_filter_days_header("cloudy days") + tooltip_idle_html;
+        } else if (sun_button.classList.contains("active")) {
+            el.innerHTML = format_filter_days_header("sunny days") + tooltip_idle_html;
+        } else {
+            el.innerHTML = tooltip_idle_html;
+        }
+    }
 
     var rainy_days = [];
     var snowy_days = [];
@@ -757,6 +808,70 @@ export async function chart(weather_data, mta_data) {
         }
     }
 
+    const weatherBySlashDate = new Map(
+        weather_data.map((w) => [to_slash_date(w.datetime), w])
+    );
+
+    function mtaDateToKey(d) {
+        const date = new Date(d.Date);
+        const day = ("0" + date.getDate()).slice(-2);
+        const month = ("0" + (date.getMonth() + 1)).slice(-2);
+        const year = date.getFullYear();
+        return `${year}-${month}-${day}`;
+    }
+
+    applyChartFiltersImpl = function applyChartFilters() {
+        const { min, max } = tempSliderBounds;
+        const slider = $("#slider");
+        const values = slider.hasClass("ui-slider") ? slider.slider("values") : [min, max];
+        const minT = +values[0];
+        const maxT = +values[1];
+        const tempFiltering = minT > min + 0.001 || maxT < max - 0.001;
+        const transportMode = getTransportFilterMode();
+
+        d3.selectAll(".temp-bar").each(function (d) {
+            let active = true;
+            if (tempFiltering && !dayInTempRange(d, minT, maxT)) active = false;
+            if (rain_button.classList.contains("active") && !String(d.preciptype).includes("rain")) active = false;
+            if (snow_button.classList.contains("active") && !String(d.preciptype).includes("snow")) active = false;
+            if (cloud_button.classList.contains("active") && !(+d.cloudcover > 55)) active = false;
+            if (sun_button.classList.contains("active") && !(+d.cloudcover < 24)) active = false;
+            const el = d3.select(this);
+            if (active) setBarActive(el);
+            else setBarInactive(el);
+        });
+
+        d3.selectAll(".train-bar").each(function (d) {
+            let active = true;
+            const dateKey = mtaDateToKey(d);
+            const weather = weatherBySlashDate.get(d.Date);
+            if (tempFiltering && weather && !dayInTempRange(weather, minT, maxT)) active = false;
+            if (rain_button.classList.contains("active") && !rainy_days.includes(dateKey)) active = false;
+            if (snow_button.classList.contains("active") && !snowy_days.includes(dateKey)) active = false;
+            if (cloud_button.classList.contains("active") && !cloudy_days.includes(dateKey)) active = false;
+            if (sun_button.classList.contains("active") && !sunny_days.includes(dateKey)) active = false;
+            if (transportMode === "bus") active = false;
+            const el = d3.select(this);
+            if (active) setBarActive(el);
+            else setBarInactive(el);
+        });
+
+        d3.selectAll(".bus-bar").each(function (d) {
+            let active = true;
+            const dateKey = mtaDateToKey(d);
+            const weather = weatherBySlashDate.get(d.Date);
+            if (tempFiltering && weather && !dayInTempRange(weather, minT, maxT)) active = false;
+            if (rain_button.classList.contains("active") && !rainy_days.includes(dateKey)) active = false;
+            if (snow_button.classList.contains("active") && !snowy_days.includes(dateKey)) active = false;
+            if (cloud_button.classList.contains("active") && !cloudy_days.includes(dateKey)) active = false;
+            if (sun_button.classList.contains("active") && !sunny_days.includes(dateKey)) active = false;
+            if (transportMode === "train") active = false;
+            const el = d3.select(this);
+            if (active) setBarActive(el);
+            else setBarInactive(el);
+        });
+    };
+
     if (chartAbortController) chartAbortController.abort();
     chartAbortController = new AbortController();
     const { signal } = chartAbortController;
@@ -776,36 +891,16 @@ export async function chart(weather_data, mta_data) {
 
         let snow_button = document.getElementById("snow-button");
 
-        if (this.classList.contains('active')) { // then turn off
+        if (this.classList.contains('active')) {
             this.classList.remove('active');
             this.classList.add('inactive');
-            const nonrainy_temp_days = d3.selectAll(".temp-bar")
-                .filter((d, i) => !d.preciptype.includes("rain")).style('opacity', '1').attr("pointer-events", "all");
-
-            const nonrainy_train_d = d3.selectAll(".train-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_rainy = rainy_days.includes(`${year}-${month}-${day}`);
-                return !is_rainy;
-            }).style("opacity", 1);
-
-            const nonrainy_bus_d = d3.selectAll(".bus-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_rainy = rainy_days.includes(`${year}-${month}-${day}`);
-                return !is_rainy;
-            }).style("opacity", 1);
-
-            nonrainy_train_d.attr("pointer-events", "all");
-            nonrainy_bus_d.attr("pointer-events", "all");
-
             rain_vid.style.display = 'none';
+            set_tooltip_background();
+            syncFilterTooltipHeader();
+            applyChartFiltersImpl();
             return;
-        } if (this.classList.contains('inactive')) {
+        }
+        if (this.classList.contains('inactive')) {
             if (snow_button.classList.contains("inactive")) {
                 snow_vid.style.display = 'none';
             }
@@ -814,31 +909,10 @@ export async function chart(weather_data, mta_data) {
             }
             rain_vid.style.display = 'block';
             set_tooltip_background();
-            const nonrainy_temp_days = d3.selectAll(".temp-bar")
-                .filter((d, i) => !d.preciptype.includes("rain")).style('opacity', '.2').attr("pointer-events", "none");;
-
-            const nonrainy_bus_d = d3.selectAll(".bus-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_rainy = rainy_days.includes(`${year}-${month}-${day}`);
-                return !is_rainy;
-            }).style("opacity", 0).attr("pointer-events", "none");
-
-            const nonrainy_train_d = d3.selectAll(".train-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_rainy = rainy_days.includes(`${year}-${month}-${day}`);
-                return !is_rainy;
-            }).style("opacity", 0).attr("pointer-events", "none");
-
-            tooltip_info.innerHTML = `${weather_info_default_html}`;
             this.classList.remove('inactive');
             this.classList.add('active');
-
+            syncFilterTooltipHeader();
+            applyChartFiltersImpl();
             return;
         }
     }, { signal });
@@ -854,63 +928,19 @@ export async function chart(weather_data, mta_data) {
         if (this.classList.contains('active')) {
             this.classList.remove('active');
             this.classList.add('inactive');
-            const nonsnowy_temp_days = d3.selectAll(".temp-bar")
-                .filter((d, i) => !d.preciptype.includes("snow"))
-                .style('opacity', '1')
-                .attr("pointer-events", "all");;
-
-            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
-            }).style("opacity", 1).attr("pointer-events", "all");
-
-            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
-            }).style("opacity", 1).attr("pointer-events", "all");
-
-            snow_vid.style.display = 'none'
+            snow_vid.style.display = 'none';
             set_tooltip_background();
-
+            syncFilterTooltipHeader();
+            applyChartFiltersImpl();
             return;
-        } if (this.classList.contains('inactive')) {
+        }
+        if (this.classList.contains('inactive')) {
             this.classList.remove('inactive');
             this.classList.add('active');
-            const nonsnowy_temp_days = d3.selectAll(".temp-bar")
-                .filter((d, i) => !d.preciptype.includes("snow"))
-                .style('opacity', '.2')
-                .attr("pointer-events", "none");;
-
-            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
-            }).style("opacity", 0).attr("pointer-events", "none");
-
-            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
-            }).style("opacity", 0).attr("pointer-events", "none");
-
-            tooltip_info.innerHTML = `${weather_info_default_html}`;
             snow_vid.style.display = 'block';
             set_tooltip_background();
-
+            syncFilterTooltipHeader();
+            applyChartFiltersImpl();
             return;
         }
     }, { signal });
@@ -923,66 +953,22 @@ export async function chart(weather_data, mta_data) {
         var snow_vid = document.getElementById("snow-vid-container");
         var cloud_vid = document.getElementById("cloud-vid-container");
 
-        if (this.classList.contains('active')) { // then turn off
+        if (this.classList.contains('active')) {
             this.classList.remove('active');
             this.classList.add('inactive');
-            const nonsnowy_temp_days = d3.selectAll(".temp-bar")
-                .filter((d, i) => !d.preciptype.includes("snow"))
-                .style('opacity', '1')
-                .attr("pointer-events", "all");
-
-            const nonsnowy_bus_d = d3.selectAll(".bus-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
-            }).style("opacity", 1).attr("pointer-events", "all");
-
-            const nonsnowy_train_d = d3.selectAll(".train-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_snowy = snowy_days.includes(`${year}-${month}-${day}`);
-                return !is_snowy;
-            }).style("opacity", 1).attr("pointer-events", "all");
-
-            cloud_vid.style.display = 'none'
+            cloud_vid.style.display = 'none';
             set_tooltip_background();
-
+            syncFilterTooltipHeader();
+            applyChartFiltersImpl();
             return;
-        } if (this.classList.contains('inactive')) {  // then turn on
-            const disable_noncloudy_days = d3.selectAll(".temp-bar")
-                .filter((d, i) => !(d.cloudcover > 55))
-                .style('opacity', '.2')
-                .attr("pointer-events", "none");
-
-            const disable_noncloudy_bus_days = d3.selectAll(".bus-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_cloudy = cloudy_days.includes(`${year}-${month}-${day}`);
-                return !is_cloudy;
-            }).style("opacity", 0).attr("pointer-events", "none");
-
-            const disable_noncloudy_train_days = d3.selectAll(".train-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_cloudy = cloudy_days.includes(`${year}-${month}-${day}`);
-                return !is_cloudy;
-            }).style("opacity", 0).attr("pointer-events", "none");
-
-            tooltip_info.innerHTML = `<p>cloudy days:</p>${weather_info_default_html}`;
+        }
+        if (this.classList.contains('inactive')) {
             this.classList.remove('inactive');
             this.classList.add('active');
             cloud_vid.style.display = 'block';
             set_tooltip_background();
-
+            syncFilterTooltipHeader();
+            applyChartFiltersImpl();
             return;
         }
     }, { signal });
@@ -996,65 +982,22 @@ export async function chart(weather_data, mta_data) {
         var cloud_vid = document.getElementById("cloud-vid-container");
         var sun_vid = document.getElementById("sun-vid-container");
 
-        if (this.classList.contains('active')) { // then turn off
+        if (this.classList.contains('active')) {
             this.classList.remove('active');
             this.classList.add('inactive');
-            const enable_nonsunny_days = d3.selectAll(".temp-bar")
-                .filter((d, i) => !(d.cloudcover < 24))
-                .style('opacity', '1')
-                .attr("pointer-events", "all");
-
-            const enable_nonsunny_bus_days = d3.selectAll(".bus-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_sunny = sunny_days.includes(`${year}-${month}-${day}`);
-                return !is_sunny;
-            }).style("opacity", 1).attr("pointer-events", "all");
-
-            const enable_nonsunny_train_days = d3.selectAll(".train-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_sunny = sunny_days.includes(`${year}-${month}-${day}`);
-                return !is_sunny;
-            }).style("opacity", 1).attr("pointer-events", "all");
-
-            sun_vid.style.display = 'none'
-
+            sun_vid.style.display = 'none';
+            set_tooltip_background();
+            syncFilterTooltipHeader();
+            applyChartFiltersImpl();
             return;
-        } if (this.classList.contains('inactive')) {  // then turn on
-            const disable_nonsunny_days = d3.selectAll(".temp-bar")
-                .filter((d, i) => !(d.cloudcover < 24))
-                .style('opacity', '.2')
-                .attr("pointer-events", "none");
-
-            const disable_nonsunny_bus_days = d3.selectAll(".bus-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_sunny = sunny_days.includes(`${year}-${month}-${day}`);
-                return !is_sunny;
-            }).style("opacity", 0).attr("pointer-events", "none");
-
-            const disable_nonsunny_train_days = d3.selectAll(".train-bar").filter(function (d, i) {
-                let date = new Date(d["Date"]);
-                let day = ('0' + date.getDate()).slice(-2);
-                let month = ('0' + (date.getMonth() + 1)).slice(-2);
-                let year = date.getFullYear();
-                let is_sunny = sunny_days.includes(`${year}-${month}-${day}`);
-                return !is_sunny;
-            }).style("opacity", 0).attr("pointer-events", "none");
-
-            tooltip_info.innerHTML = `<p>cloudy days:</p>${weather_info_default_html}`;
+        }
+        if (this.classList.contains('inactive')) {
             this.classList.remove('inactive');
             this.classList.add('active');
             sun_vid.style.display = 'block';
             set_tooltip_background();
-
+            syncFilterTooltipHeader();
+            applyChartFiltersImpl();
             return;
         }
     }, { signal });
@@ -1076,9 +1019,6 @@ export async function chart(weather_data, mta_data) {
 
         turn_off_all_videos();
         set_tooltip_background();
-        d3.selectAll(".temp-bar").style('opacity', '1');
-        d3.selectAll(".train-bar").style('opacity', '1');
-        d3.selectAll(".bus-bar").style('opacity', '1');
         setTransportFilter("both");
         snow_button.classList.remove('active');
         snow_button.classList.add('inactive');
@@ -1088,6 +1028,7 @@ export async function chart(weather_data, mta_data) {
         sun_button.classList.add('inactive');
         cloud_button.classList.remove('active');
         cloud_button.classList.add('inactive');
+        syncFilterTooltipHeader();
 
         const { min, max } = tempSliderBounds;
         const slider = $("#slider");
@@ -1121,29 +1062,5 @@ function dayInTempRange(d, minT, maxT) {
 }
 
 export function onSlide(event, ui, values) {
-    const minT = +values[0];
-    const maxT = +values[1];
-
-    const outOfRangeDates = new Set();
-    d3.selectAll(".temp-bar").each(function (d) {
-        const inRange = dayInTempRange(d, minT, maxT);
-        d3.select(this)
-            .style("opacity", inRange ? 1 : 0)
-            .attr("pointer-events", inRange ? "all" : "none");
-        if (!inRange) outOfRangeDates.add(to_slash_date(d.datetime));
-    });
-
-    d3.selectAll(".train-bar").each(function (d) {
-        const inRange = !outOfRangeDates.has(d.Date);
-        d3.select(this)
-            .style("opacity", inRange ? 1 : 0)
-            .attr("pointer-events", inRange ? "all" : "none");
-    });
-
-    d3.selectAll(".bus-bar").each(function (d) {
-        const inRange = !outOfRangeDates.has(d.Date);
-        d3.select(this)
-            .style("opacity", inRange ? 1 : 0)
-            .attr("pointer-events", inRange ? "all" : "none");
-    });
+    if (applyChartFiltersImpl) applyChartFiltersImpl();
 }
