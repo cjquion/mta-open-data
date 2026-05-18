@@ -263,11 +263,21 @@ li {
     transform: translate(-50%,-50%);
     width: 100%;
     height: 100%;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: auto;
     text-align: center;
 }
+#my_dataviz svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
 #container {
+    container-type: size;
     max-width: 78.25vw;
     position: absolute;
     width: 78.25vw;
@@ -293,18 +303,17 @@ li {
 #tooltip-wrapper {
     position: absolute;
     box-sizing: border-box;
-    height: 29.5vh;
-    width: 29.5vh;
+    width: 28cqmin;
+    height: 28cqmin;
+    aspect-ratio: 1;
     left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Roboto Mono", monospace;
+    background: black;
     font-family: "Roboto Mono", monospace;
     overflow: hidden;
     border-radius: 50%;
+    clip-path: circle(50% at 50% 50%);
 }
 body {
     box-sizing: border-box;
@@ -314,16 +323,16 @@ body {
     max-width: none;
 }
 #tooltip {
-    position: relative;
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
     text-align: center;
     background: black;
-    color: white;    
-    padding: 1rem;
-    border: 0px;
+    color: white;
+    padding: 0;
+    border: 0;
     pointer-events: none;
     font-size: 1rem;
-    height: 100%;
-    width: 100%;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -332,44 +341,37 @@ body {
     overflow: hidden;
 }
 #tooltip video {
-    position: relative;
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
+    object-fit: cover;
     opacity: 1;
 }
 #observablehq-toc {
     display: none;
 }
-#rain-vid-container {
-    display: none;
-    position: absolute;
-    height: 1000px;
-    width: 1000px;
-}
-#snow-vid-container {
-    display: none;
-    position: absolute;
-    height: 1000px;
-    width: 1000px;
-}
-#cloud-vid-container {
-    display: none;
-    position: absolute;
-    height: 1000px;
-    width: 1000px;
-}
+#rain-vid-container,
+#snow-vid-container,
+#cloud-vid-container,
 #sun-vid-container {
     display: none;
     position: absolute;
-    height: 29.5vh;
-    width: 69vh;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 50%;
+    background: black;
 }
 #tooltip-info {
-    position: absolute;
+    position: relative;
     font-size: .8vw;
     z-index: 100;
-    padding: 1vw;
+    padding: 1rem;
+    max-width: 85%;
+    color: white;
 }
 #legend {
     display: block;
