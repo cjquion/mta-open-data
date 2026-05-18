@@ -1,7 +1,5 @@
 <link rel="stylesheet" href="./jquery-ui.css" type="text/css">
 
-<link rel="stylesheet" href="npm:jquery-ui/dist/themes/base/jquery-ui.css">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
