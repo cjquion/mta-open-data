@@ -594,6 +594,7 @@ export async function chart(weather_data, mta_data) {
     // ADD TRAIN SVG
     dataviz_svg.append("g")
         .attr("id", "train-svg-g")
+        .attr("class", "train-ring")
         .selectAll("path")
         .data(mta_data)
         .enter()
@@ -689,6 +690,7 @@ export async function chart(weather_data, mta_data) {
     // ADD BUS SVG
     dataviz_svg.append("g")
         .attr("id", "bus-svg-g")
+        .attr("class", "bus-ring")
         .selectAll("path")
         .data(mta_data)
         .enter()
@@ -815,10 +817,10 @@ export async function chart(weather_data, mta_data) {
         let cloudcover = weather_data[s].cloudcover;
         let date = weather_data[s].datetime;
 
-        if (precip_type.includes("rain")) {
+        if (String(precip_type).includes("rain")) {
             rainy_days.push(date)
         }
-        if (precip_type.includes("snow")) {
+        if (String(precip_type).includes("snow")) {
             snowy_days.push(date)
         }
         if (cloudcover > 55) {
